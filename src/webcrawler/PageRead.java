@@ -22,10 +22,10 @@ public class PageRead {
 			return sb;            
         } catch (MalformedURLException e) {
             e.printStackTrace();
-			return new StringBuilder("");
+			return new StringBuilder();
         }  catch (IOException e) {
             e.printStackTrace();
-			return new StringBuilder("");
+			return new StringBuilder();
         }
     }
 

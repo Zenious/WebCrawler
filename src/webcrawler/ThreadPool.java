@@ -7,6 +7,7 @@
 package webcrawler;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -22,8 +23,8 @@ public class ThreadPool {
     private ExecutorService dlExecutor;
     
     public ThreadPool(){
-        this.numOfDLThreads = 15;
-        this.numOfPThreads = 15;
+        this.numOfDLThreads = 5;
+        this.numOfPThreads = 5;
     }
     
     public ThreadPool(int dlThreads, int pThreads){
@@ -31,13 +32,25 @@ public class ThreadPool {
         this.numOfPThreads = pThreads;
     }
     
-    public void Execute(LinkedList<Url> urls) throws InterruptedException{
+    public void Execute(List<Url> urls) throws InterruptedException{
         
         dlExecutor = Executors.newFixedThreadPool(numOfDLThreads);
         pExecutor = Executors.newFixedThreadPool(numOfPThreads);
         for (Url link : urls){
         dlExecutor.execute(new DownloadThread(link, dlExecutor, pExecutor, urls));
         }
+        
+        while(!dlExecutor.isTerminated()){
+        }
+        System.out.println("DL SHUT");
+        pExecutor.shutdown();
+        while(!pExecutor.isTerminated()){
+        }
+        for (Url url : urls){
+            if (url.getContent().toString() != null){
+                System.out.println(url.getLink());
+            }
+        
+        }
     }
-    
 }

@@ -8,6 +8,7 @@ package webcrawler;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,9 +21,9 @@ import java.util.regex.Pattern;
  */
 public class ProcessThread implements Runnable{
     private Url link;
-    private LinkedList<Url> urls;
+    private List<Url> urls;
     private ExecutorService nextExecute, thisExecute;
-    public ProcessThread(Url link, LinkedList<Url> urls, ExecutorService thisExecutor, ExecutorService nextExecutor){
+    public ProcessThread(Url link, List<Url> urls, ExecutorService thisExecutor, ExecutorService nextExecutor){
         this.link = link;
         this.urls = urls;
         this.nextExecute = nextExecutor;
@@ -43,7 +44,7 @@ public class ProcessThread implements Runnable{
                 String word = matcher.group();
                 if (!references.contains(word)){
                     references.add(word);
-                    System.out.println(word);
+                   // System.out.println(word);
                 }
                 boolean exist = false;
                 for (Url url : urls){
@@ -53,11 +54,13 @@ public class ProcessThread implements Runnable{
                     }
                 }
                 if (!exist){
-                    urls.add(new Url(word));
-                    nextExecute.execute(new DownloadThread(link, thisExecute, nextExecute, urls));
+                    Url newlink = new Url(word);
+                    urls.add(newlink);
+                    if (!nextExecute.isShutdown()){
+                        nextExecute.execute(new DownloadThread(newlink, nextExecute, thisExecute, urls));
+                    }
                 }
-                if (urls.size() == 15){
-                    thisExecute.shutdown();
+                if (urls.size() >= 15){
                     nextExecute.shutdown();
                 }
             }

@@ -7,6 +7,7 @@
 package webcrawler;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -16,8 +17,8 @@ import java.util.concurrent.ExecutorService;
 public class DownloadThread implements Runnable{
     private Url link;
     private ExecutorService nextExecute,thisExecute;
-    private LinkedList<Url> urls;
-    public DownloadThread(Url link, ExecutorService thisExecutor, ExecutorService nextExecutor, LinkedList<Url> urls){
+    private List<Url> urls;
+    public DownloadThread(Url link, ExecutorService thisExecutor, ExecutorService nextExecutor, List<Url> urls){
         this.link = link;
         this.nextExecute = nextExecutor;
         this.thisExecute = thisExecutor;
@@ -26,14 +27,17 @@ public class DownloadThread implements Runnable{
 
     @Override
     public void run(){
-        System.out.println("Downloading "+link.getLink());
+       System.out.println("Downloading "+link.getLink());
         StringBuilder sb = new StringBuilder();
         sb = PageRead.readPage(link.getLink());
+
         link.setContent(sb);
         System.out.println("Download finished "+link.getLink());
-        nextExecute.execute(new ProcessThread(link, urls, thisExecute, nextExecute));
+     //   if (!nextExecute.isShutdown()){
+        nextExecute.execute(new ProcessThread(link, urls, nextExecute, thisExecute));
+     //   }
+        
     }
-    
 }
     
 
