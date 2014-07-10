@@ -6,14 +6,8 @@
 
 package webcrawler;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Callable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.LinkedList;
+import java.util.concurrent.ExecutorService;
 
 /**
  *
@@ -21,8 +15,13 @@ import java.util.logging.Logger;
  */
 public class DownloadThread implements Runnable{
     private Url link;
-    public DownloadThread(Url link){
+    private ExecutorService nextExecute,thisExecute;
+    private LinkedList<Url> urls;
+    public DownloadThread(Url link, ExecutorService thisExecutor, ExecutorService nextExecutor, LinkedList<Url> urls){
         this.link = link;
+        this.nextExecute = nextExecutor;
+        this.thisExecute = thisExecutor;
+        this.urls = urls;
     }
 
     @Override
@@ -32,6 +31,7 @@ public class DownloadThread implements Runnable{
         sb = PageRead.readPage(link.getLink());
         link.setContent(sb);
         System.out.println("Download finished "+link.getLink());
+        nextExecute.execute(new ProcessThread(link, urls, thisExecute, nextExecute));
     }
     
 }

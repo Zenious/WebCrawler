@@ -7,13 +7,8 @@
 package webcrawler;
 
 import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingDeque;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import static webcrawler.WebCrawler.urls;
 
 /**
  *
@@ -27,8 +22,8 @@ public class ThreadPool {
     private ExecutorService dlExecutor;
     
     public ThreadPool(){
-        this.numOfDLThreads = 10;
-        this.numOfPThreads = 10;
+        this.numOfDLThreads = 15;
+        this.numOfPThreads = 15;
     }
     
     public ThreadPool(int dlThreads, int pThreads){
@@ -36,64 +31,13 @@ public class ThreadPool {
         this.numOfPThreads = pThreads;
     }
     
-    public LinkedList DepthSearch(LinkedList<Url> urls) throws InterruptedException{
-        
-        LinkedList<Url> temp = new LinkedList<>();
-        for (Url url : urls){
-            for (String reference : url.getReferences()){
-                System.out.println(reference);
-                temp.add(new Url(reference));
-            }
-        }
-        for (Url url : temp) {
-            Runnable downloadWorker = new DownloadThread(url);
-            Runnable processWorker = new ProcessThread(url);
-            dlExecutor.execute(downloadWorker);
-            pExecutor.execute(processWorker);
-            count ++;
-        if (count>100) {
-            System.out.println("100 reached");
-            dlExecutor.shutdown();
-            pExecutor.shutdown();
-            return temp;
-        }
-        }
-        DepthSearch(temp);
-        return null;
-    }
-    
     public void Execute(LinkedList<Url> urls) throws InterruptedException{
         
         dlExecutor = Executors.newFixedThreadPool(numOfDLThreads);
         pExecutor = Executors.newFixedThreadPool(numOfPThreads);
-        for (Url url : urls) {
-            Runnable downloadWorker = new DownloadThread(url);
-            Runnable processWorker = new ProcessThread(url);
-            dlExecutor.execute(downloadWorker);
-            pExecutor.execute(processWorker);
-            count++;
-        } 
-        while(true){
-            int counter = 0;
-            for (Url url : urls){
-            if(url.getReferences()==null){
-                System.out.println("EMPTY");
-            }else{
-                counter++;
-            }
-         }            if (counter==urls.size()) {
-                LinkedList tempo = DepthSearch(urls);
-                break;
-            }
-        }
-        
-        
-        while (!pExecutor.isTerminated()){
-        }
-        
-        
-        System.out.println("Finished DL.");
-    
-        
+        for (Url link : urls){
+        dlExecutor.execute(new DownloadThread(link, dlExecutor, pExecutor, urls));
         }
     }
+    
+}

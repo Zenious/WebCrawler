@@ -38,17 +38,15 @@ public class Url {
     /**
      * @return the content
      */
-    public synchronized StringBuilder getContent() throws InterruptedException {
-        wait(10000);
+    public StringBuilder getContent() throws InterruptedException {
         return content;
     }
 
     /**
      * @param content the content to set
      */
-    public synchronized void setContent(StringBuilder content) {
+    public void setContent(StringBuilder content) {
         this.content = content;
-        notify();
     }
 
     /**
