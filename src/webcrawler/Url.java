@@ -7,7 +7,6 @@
 package webcrawler;
 
 import java.util.ArrayList;
-
 /**
  *
  * @author Zheng Wei

@@ -15,7 +15,7 @@ import java.util.concurrent.Executors;
  *
  * @author Zheng Wei
  */
-public class ThreadPool {
+public class ThreadPool extends Thread{
     private int numOfDLThreads;
     private int numOfPThreads;
     private int count = 0;
@@ -32,10 +32,10 @@ public class ThreadPool {
         this.numOfPThreads = pThreads;
     }
     
-    public void Execute(List<Url> urls) throws InterruptedException{
+    public List Execute(List<Url> urls) throws InterruptedException{
         
-        dlExecutor = Executors.newFixedThreadPool(numOfDLThreads);
-        pExecutor = Executors.newFixedThreadPool(numOfPThreads);
+        dlExecutor = Executors.newFixedThreadPool(getNumOfDLThreads());
+        pExecutor = Executors.newFixedThreadPool(getNumOfPThreads());
         for (Url link : urls){
         dlExecutor.execute(new DownloadThread(link, dlExecutor, pExecutor, urls));
         }
@@ -49,8 +49,38 @@ public class ThreadPool {
         for (Url url : urls){
             if (url.getContent().toString() != null){
                 System.out.println(url.getLink());
+                
             }
         
         }
+        return urls;
+    }
+
+    /**
+     * @return the numOfDLThreads
+     */
+    public int getNumOfDLThreads() {
+        return numOfDLThreads;
+    }
+
+    /**
+     * @param numOfDLThreads the numOfDLThreads to set
+     */
+    public void setNumOfDLThreads(int numOfDLThreads) {
+        this.numOfDLThreads = numOfDLThreads;
+    }
+
+    /**
+     * @return the numOfPThreads
+     */
+    public int getNumOfPThreads() {
+        return numOfPThreads;
+    }
+
+    /**
+     * @param numOfPThreads the numOfPThreads to set
+     */
+    public void setNumOfPThreads(int numOfPThreads) {
+        this.numOfPThreads = numOfPThreads;
     }
 }

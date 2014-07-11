@@ -54,9 +54,9 @@ public class ProcessThread implements Runnable{
                     }
                 }
                 if (!exist){
-                    Url newlink = new Url(word);
-                    urls.add(newlink);
                     if (!nextExecute.isShutdown()){
+                        Url newlink = new Url(word);
+                        urls.add(newlink);
                         nextExecute.execute(new DownloadThread(newlink, nextExecute, thisExecute, urls));
                     }
                 }
@@ -67,6 +67,8 @@ public class ProcessThread implements Runnable{
             
             link.setReferences(references);
             System.out.println("Processed "+link.getLink());
+            GUI.updateList(link.getLink());
+            GUI.jList1.repaint();
             
             
         } catch (InterruptedException ex) {
