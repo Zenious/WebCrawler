@@ -1,4 +1,4 @@
-package webcrawler;
+package page_utils;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -22,15 +22,11 @@ public class PageRead {
 			return sb;            
         } catch (MalformedURLException e) {
             e.printStackTrace();
-			return new StringBuilder();
+			return null;
         }  catch (IOException e) {
             e.printStackTrace();
-			return new StringBuilder();
+			return null;
         }
     }
 
-    public static void main(String arg[]){
-
-		System.out.println(readPage("http://www.google.com"));
-    }
 }

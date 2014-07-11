@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package webcrawler;
+package page_utils;
 
 import java.util.ArrayList;
 
@@ -12,12 +12,18 @@ import java.util.ArrayList;
  *
  * @author Zheng Wei
  */
-public class Url {
+public class Page {
     private String link;
     private StringBuilder content;
     private ArrayList<String> references;
     
-    public Url(String link){
+    public Page(String url, StringBuilder sb){
+        this.link = url;
+        this.content = sb;
+        
+    }
+    
+    public Page(String link){
         this.link = link;
     }
 
