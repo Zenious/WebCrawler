@@ -20,16 +20,19 @@ public class WebCrawler {
     
     public static List<Page> seeds;
     public static List<Page> pagesDone = Collections.synchronizedList(new ArrayList<Page>());
+    //the Variable can be initialized in the GUI
+    //requires return type = > make WebCrawler implements Callable
     
     public static void main(String[] args) {
         
         seeds = Collections.synchronizedList(new ArrayList<Page>());
         Page u1 = new Page("http://www.wikipedia.com");
-        //Page u2 = new Page("http://www.cnet.com");
+        Page u2 = new Page("http://www.cnet.com");
         seeds.add(u1);
-        //seeds.add(u2);
+        seeds.add(u2);
 
-        ExecutorHandler ex = new ExecutorHandler(5, 5, seeds);
+        ExecutorHandler ex = new ExecutorHandler(5, 10, seeds);
         ex.start();
+
     }
 }

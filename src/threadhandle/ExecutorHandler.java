@@ -21,7 +21,7 @@ public class ExecutorHandler extends Thread{
     private int numOfProcessThreads;
     
     public static ExecutorService dlExecutor;
-    public static ExecutorService pExecuter;
+    public static ExecutorService pExecutor;
     public List<Page> seeds;
     
     public ExecutorHandler(List<Page> seeds){
@@ -29,7 +29,7 @@ public class ExecutorHandler extends Thread{
         this.numOfProcessThreads = 5;
         this.seeds = seeds;
         ExecutorHandler.dlExecutor = Executors.newFixedThreadPool(numOfDownloadThreads);
-        ExecutorHandler.pExecuter = Executors.newFixedThreadPool(numOfProcessThreads);
+        ExecutorHandler.pExecutor = Executors.newFixedThreadPool(numOfProcessThreads);
     }
     
     public ExecutorHandler(int d, int p, List<Page> seeds){
@@ -37,7 +37,7 @@ public class ExecutorHandler extends Thread{
         this.numOfProcessThreads = p;
         this.seeds = seeds;
         ExecutorHandler.dlExecutor = Executors.newFixedThreadPool(numOfDownloadThreads);
-        ExecutorHandler.pExecuter = Executors.newFixedThreadPool(numOfProcessThreads);
+        ExecutorHandler.pExecutor = Executors.newFixedThreadPool(numOfProcessThreads);
     }
     
     @Override

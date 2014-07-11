@@ -24,12 +24,13 @@ public class Processor implements Runnable {
     public ArrayList<String> URLs = new ArrayList<>();
 
     public Processor(Page newPage) throws InterruptedException {
+        System.out.println("\tProcessing: " + newPage.getLink());
         this.processingPage = newPage;
         this.matcher = pattern.matcher(processingPage.getContent().toString());
     }
 
     @Override
-    public void run() {
+    public void run() {        
         while (this.matcher.find()) {
             String url = this.matcher.group();
             if (!this.URLs.contains(url)) {
@@ -47,20 +48,22 @@ public class Processor implements Runnable {
             }
 
             if (!pageProcessed) {
-                if (main.WebCrawler.pagesDone.size() >= 15) {
+                if (main.WebCrawler.pagesDone.size() >= 100) {
                     ExecutorHandler.dlExecutor.shutdownNow();
-                    ExecutorHandler.pExecuter.shutdownNow();
+                    ExecutorHandler.pExecutor.shutdownNow();
                     break;
                 } else {
+                    
                     System.out.println(processingPage.getLink() + " | " + url);
                     Page newPage = new Page(url);
-                    if (!ExecutorHandler.pExecuter.isShutdown() && !ExecutorHandler.dlExecutor.isShutdown()) {
-                        ExecutorHandler.pExecuter.submit(new Downloader(newPage));
+                    if (!ExecutorHandler.pExecutor.isShutdown() && !ExecutorHandler.dlExecutor.isShutdown()) {
+                        ExecutorHandler.dlExecutor.submit(new Downloader(newPage));
                     }
                 }
             }
         }
         System.out.println("[+] Processed:" + processingPage.getLink());
+        //main.WebCrawler.pagesDone.add(processingPage);
     }
 
 }

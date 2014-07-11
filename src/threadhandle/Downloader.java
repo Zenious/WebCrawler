@@ -25,16 +25,16 @@ public class Downloader implements Runnable {
 
     @Override
     public void run() {
-        if (!ExecutorHandler.pExecuter.isShutdown() && !ExecutorHandler.dlExecutor.isShutdown()) {
-            if (main.WebCrawler.pagesDone.size() < 15 && !main.WebCrawler.pagesDone.contains(page.getLink())) {
-                sb = PageRead.readPage(page.getLink());
+        if (!ExecutorHandler.pExecutor.isShutdown() && !ExecutorHandler.dlExecutor.isShutdown()) {
+            sb = PageRead.readPage(page.getLink());
+            if (main.WebCrawler.pagesDone.size() < 100) {
                 if (sb != null) {
                     page.setContent(sb);
                     System.out.println("[+] Downloaded: " + page.getLink());
                     main.WebCrawler.pagesDone.add(page);
                     System.out.println(main.WebCrawler.pagesDone.size());
                     try {
-                        ExecutorHandler.pExecuter.submit(new Processor(page));
+                        ExecutorHandler.pExecutor.submit(new Processor(page));
                     } catch (InterruptedException ex) {
                         System.out.println("Interrupted");
                         Logger.getLogger(Downloader.class.getName()).log(Level.SEVERE, null, ex);
