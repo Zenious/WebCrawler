@@ -47,6 +47,7 @@ public class ThreadPool extends Thread{
         while(!pExecutor.isTerminated()){
         }
         for (Url url : urls){
+            System.out.println(urls.size());
             if (url.getContent().toString() != null){
                 System.out.println(url.getLink());
                 

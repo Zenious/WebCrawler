@@ -20,11 +20,8 @@ public class WebCrawler {
      * @param args the command line arguments
      */
         public static List<Url> urls;
-      public static void main(String[] args) {
-       GUI gui = new GUI();
-       gui.setVisible(true);
-    }
-        /*
+ 
+        
         public static void main(String[] args) throws InterruptedException {
         // TODO code application logic here;
 
@@ -35,7 +32,7 @@ public class WebCrawler {
         urls.add(link2);
         ThreadPool tp = new ThreadPool();
         tp.Execute(urls);
-    */
+        }
         }
 
 

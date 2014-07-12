@@ -35,7 +35,7 @@ public class ProcessThread implements Runnable{
     public void run(){
         try {
             System.out.println("Processing "+link.getLink());
-            String regexp = "http://(\\w+\\.)+(\\w+)";
+            String regexp = "http[s]*:\\/\\/(((?:[-;:&=\\+\\$,\\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\\+\\$,\\w]+@)[A-Za-z0-9.-]+)((?:\\/[\\+~%\\/.\\w-_]*)?\\??(?:[-\\+=&;%@.\\w_]*)#?(?:[\\w]*))?)"; 
             Pattern pattern = Pattern.compile(regexp);
             Matcher matcher = pattern.matcher(link.getContent().toString());
             ArrayList<String> references = new ArrayList<>();
@@ -55,20 +55,20 @@ public class ProcessThread implements Runnable{
                 }
                 if (!exist){
                     if (!nextExecute.isShutdown()){
-                        Url newlink = new Url(word);
-                        urls.add(newlink);
+                    Url newlink = new Url(word);
+                    urls.add(newlink);
                         nextExecute.execute(new DownloadThread(newlink, nextExecute, thisExecute, urls));
                     }
                 }
-                if (urls.size() >= 15){
+                if (urls.size() >= 100){
                     nextExecute.shutdown();
                 }
             }
             
             link.setReferences(references);
             System.out.println("Processed "+link.getLink());
-            GUI.updateList(link.getLink());
-            GUI.jList1.repaint();
+//            GUI.updateList(link.getLink());
+  //          GUI.jList1.repaint();
             
             
         } catch (InterruptedException ex) {
