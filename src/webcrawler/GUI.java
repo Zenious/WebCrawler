@@ -9,8 +9,12 @@ package webcrawler;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
+import javax.swing.text.Document;
+import javax.swing.text.html.HTMLEditorKit;
 
 
 /**
@@ -44,15 +48,51 @@ public class GUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jFrame1 = new javax.swing.JFrame();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        jEditorPane3 = new javax.swing.JEditorPane();
         seedUrl1 = new javax.swing.JTextField();
         seed1 = new javax.swing.JLabel();
         startBtn = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList();
 
+        jEditorPane3.setEditable(false);
+        HTMLEditorKit kit = new HTMLEditorKit();
+        jEditorPane3.setEditorKit(kit);
+        Document doc = kit.createDefaultDocument();
+        jEditorPane3.setDocument(doc);
+        jScrollPane4.setViewportView(jEditorPane3);
+
+        javax.swing.GroupLayout jFrame1Layout = new javax.swing.GroupLayout(jFrame1.getContentPane());
+        jFrame1.getContentPane().setLayout(jFrame1Layout);
+        jFrame1Layout.setHorizontalGroup(
+            jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jFrame1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jFrame1Layout.setVerticalGroup(
+            jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jFrame1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         seedUrl1.setText("Website to crawl.");
+        seedUrl1.setToolTipText("Website to crawl.");
+        seedUrl1.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                seedUrl1FocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                seedUrl1FocusLost(evt);
+            }
+        });
 
         seed1.setText("Seed (1)");
 
@@ -64,6 +104,11 @@ public class GUI extends javax.swing.JFrame {
         });
 
         jList1.setModel(model);
+        jList1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jList1MouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(jList1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -115,6 +160,28 @@ public class GUI extends javax.swing.JFrame {
             
     }//GEN-LAST:event_startBtnActionPerformed
 
+    private void seedUrl1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_seedUrl1FocusGained
+        // TODO add your handling code here:
+        seedUrl1.setText("");
+    }//GEN-LAST:event_seedUrl1FocusGained
+
+    private void seedUrl1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_seedUrl1FocusLost
+        if (seedUrl1.getText().isEmpty()){
+            seedUrl1.setText("Website to crawl.");
+        }
+        // TODO add your handling code here:
+    }//GEN-LAST:event_seedUrl1FocusLost
+
+    private void jList1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList1MouseClicked
+        System.out.println(jList1.getSelectedIndex() +" "+ jList1.getSelectedValue());
+            try {
+                jEditorPane3.setText(urls.get(jList1.getSelectedIndex()).getContent().toString());
+            }catch (InterruptedException e){}
+            jFrame1.pack();
+            jFrame1.setVisible(true);
+                // TODO add your handling code here:
+    }//GEN-LAST:event_jList1MouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -151,8 +218,11 @@ public class GUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JEditorPane jEditorPane3;
+    private javax.swing.JFrame jFrame1;
     public static javax.swing.JList jList1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JLabel seed1;
     private javax.swing.JTextField seedUrl1;
     private javax.swing.JButton startBtn;
