@@ -60,7 +60,7 @@ public class ProcessThread implements Runnable{
                         nextExecute.execute(new DownloadThread(newlink, nextExecute, thisExecute, urls));
                     }
                 }
-                if (urls.size() >= 100){
+                if (urls.size() >= GUI.maxCrawl){
                     nextExecute.shutdown();
                 }
             }
@@ -69,7 +69,8 @@ public class ProcessThread implements Runnable{
             System.out.println("Processed "+link.getLink());
             GUI.updateList(link.getLink());
             GUI.jList1.repaint();
-            
+            System.out.println(link.getLink());
+            System.out.println(link.getContent()+"\n\n\n");
             
         } catch (InterruptedException ex) {
             System.out.println("INTERUPPTED");
