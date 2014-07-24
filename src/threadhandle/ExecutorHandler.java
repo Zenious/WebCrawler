@@ -43,7 +43,7 @@ public class ExecutorHandler extends Thread{
     @Override
     public void run(){
         for(Page page : seeds){  
-            dlExecutor.submit(new Downloader(page));
+            dlExecutor.execute(new Downloader(page));
         }
-    }
+    } 
 }

@@ -18,20 +18,26 @@ import threadhandle.ExecutorHandler;
  */
 public class WebCrawler {
     
-    public static List<Page> seeds;
-    public static List<Page> pagesDone = Collections.synchronizedList(new ArrayList<Page>());
-    //the Variable can be initialized in the GUI
-    //requires return type = > make WebCrawler implements Callable
+    public static List<Page> seeds ;
+    
+    public static ExecutorHandler ex;
+    public static final int numberOfURLs = 100;
+    public static int processedURLS = 2;
+
+    public static void test(){
+        System.out.println("Done");
+    }
+    
     
     public static void main(String[] args) {
-        
+
         seeds = Collections.synchronizedList(new ArrayList<Page>());
         Page u1 = new Page("http://www.wikipedia.com");
         Page u2 = new Page("http://www.cnet.com");
         seeds.add(u1);
         seeds.add(u2);
 
-        ExecutorHandler ex = new ExecutorHandler(5, 10, seeds);
+        ex = new ExecutorHandler(5, 5, seeds);
         ex.start();
 
     }

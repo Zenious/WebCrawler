@@ -6,9 +6,10 @@
 package threadhandle;
 
 import java.util.ArrayList;
-import java.util.jar.Pack200;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import main.WebCrawler;
 import page_utils.Page;
 
 /**
@@ -40,7 +41,7 @@ public class Processor implements Runnable {
             }
 
             boolean pageProcessed = false;
-            for (Page page : main.WebCrawler.pagesDone) {
+            for (Page page : main.WebCrawler.seeds) {
                 if (page.getLink().equalsIgnoreCase(url)) {
                     pageProcessed = true;
                     break;
@@ -48,21 +49,24 @@ public class Processor implements Runnable {
             }
 
             if (!pageProcessed) {
-                if (main.WebCrawler.pagesDone.size() >= 100) {
-                    ExecutorHandler.dlExecutor.shutdownNow();
-                    ExecutorHandler.pExecutor.shutdownNow();
+                if (main.WebCrawler.seeds.size() >= main.WebCrawler.numberOfURLs) {                   
+                    ExecutorHandler.dlExecutor.shutdown();
+                    ExecutorHandler.pExecutor.shutdown();
                     break;
                 } else {
                     
-                    System.out.println(processingPage.getLink() + " | " + url);
+                    //System.out.println(processingPage.getLink() + " | " + url);
+                    //System.out.println(WebCrawler.processedURLS);
                     Page newPage = new Page(url);
-                    if (!ExecutorHandler.pExecutor.isShutdown() && !ExecutorHandler.dlExecutor.isShutdown()) {
-                        ExecutorHandler.dlExecutor.submit(new Downloader(newPage));
+                    if (main.WebCrawler.seeds.size() < main.WebCrawler.numberOfURLs && !ExecutorHandler.dlExecutor.isShutdown() ) {
+                        ExecutorHandler.dlExecutor.execute(new Downloader(newPage));
+                        WebCrawler.processedURLS++;
                     }
                 }
             }
         }
-        System.out.println("[+] Processed:" + processingPage.getLink());
+        this.processingPage.setReferences(URLs);
+        //System.out.println("[+] Processed:" + processingPage.getLink());
         //main.WebCrawler.pagesDone.add(processingPage);
     }
 

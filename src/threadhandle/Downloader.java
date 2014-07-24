@@ -7,6 +7,7 @@ package threadhandle;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import main.WebCrawler;
 import page_utils.Page;
 import page_utils.PageRead;
 
@@ -25,25 +26,42 @@ public class Downloader implements Runnable {
 
     @Override
     public void run() {
-        if (!ExecutorHandler.pExecutor.isShutdown() && !ExecutorHandler.dlExecutor.isShutdown()) {
+        if (WebCrawler.seeds.size() < main.WebCrawler.numberOfURLs) {
             sb = PageRead.readPage(page.getLink());
-            if (main.WebCrawler.pagesDone.size() < 100) {
-                if (sb != null) {
-                    page.setContent(sb);
-                    System.out.println("[+] Downloaded: " + page.getLink());
-                    main.WebCrawler.pagesDone.add(page);
-                    System.out.println(main.WebCrawler.pagesDone.size());
-                    try {
-                        ExecutorHandler.pExecutor.submit(new Processor(page));
-                    } catch (InterruptedException ex) {
-                        System.out.println("Interrupted");
-                        Logger.getLogger(Downloader.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
+            if (sb == null) {
+                return;
+            }
+            page.setContent(sb);
+            System.out.println(main.WebCrawler.seeds.size() + " [+] Downloaded: " + page.getLink());
+            if (main.WebCrawler.seeds.size() < main.WebCrawler.numberOfURLs) {
+                main.WebCrawler.seeds.add(page);
+            }
 
+            try {
+                ExecutorHandler.pExecutor.execute(new Processor(page));
+            } catch (InterruptedException ex) {
+                System.out.println("Interrupted");
+                Logger.getLogger(Downloader.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
+        /*if (!ExecutorHandler.pExecutor.isShutdown() && !ExecutorHandler.dlExecutor.isShutdown()) {
+         sb = PageRead.readPage(page.getLink());
+         if (main.WebCrawler.seeds.size() < 100) {
+         if (sb != null) {
+         page.setContent(sb);
+         //System.out.println("[+] Downloaded: " + page.getLink());
+         main.WebCrawler.seeds.add(page);
+         System.out.println(main.WebCrawler.seeds.size());
+         try {
+         ExecutorHandler.pExecutor.submit(new Processor(page));
+         } catch (InterruptedException ex) {
+         System.out.println("Interrupted");
+         Logger.getLogger(Downloader.class.getName()).log(Level.SEVERE, null, ex);
+         }
+         }
+         }
+         }*/
     }
 
 }
