@@ -5,6 +5,7 @@
  */
 package threadhandle;
 
+import com.sun.corba.se.impl.presentation.rmi.ExceptionHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import main.WebCrawler;
@@ -26,42 +27,26 @@ public class Downloader implements Runnable {
 
     @Override
     public void run() {
-        if (WebCrawler.seeds.size() < main.WebCrawler.numberOfURLs) {
-            sb = PageRead.readPage(page.getLink());
-            if (sb == null) {
-                return;
-            }
-            page.setContent(sb);
-            System.out.println(main.WebCrawler.seeds.size() + " [+] Downloaded: " + page.getLink());
-            if (main.WebCrawler.seeds.size() < main.WebCrawler.numberOfURLs) {
-                main.WebCrawler.seeds.add(page);
-            }
 
-            try {
-                ExecutorHandler.pExecutor.execute(new Processor(page));
-            } catch (InterruptedException ex) {
-                System.out.println("Interrupted");
-                Logger.getLogger(Downloader.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        sb = PageRead.readPage(page.getLink());
+        if (sb == null) {
+            return;
         }
+        page.setContent(sb);
+        if (ExecutorHandler.donePagesCount < main.WebCrawler.numberOfURLs) {            
+            WebCrawler.donePages.add(page);
+            System.out.println(WebCrawler.donePages.size() + " [+] Downloaded: " + page.getLink());
+            ExecutorHandler.donePagesCount++;
+        }        
 
-        /*if (!ExecutorHandler.pExecutor.isShutdown() && !ExecutorHandler.dlExecutor.isShutdown()) {
-         sb = PageRead.readPage(page.getLink());
-         if (main.WebCrawler.seeds.size() < 100) {
-         if (sb != null) {
-         page.setContent(sb);
-         //System.out.println("[+] Downloaded: " + page.getLink());
-         main.WebCrawler.seeds.add(page);
-         System.out.println(main.WebCrawler.seeds.size());
-         try {
-         ExecutorHandler.pExecutor.submit(new Processor(page));
-         } catch (InterruptedException ex) {
-         System.out.println("Interrupted");
-         Logger.getLogger(Downloader.class.getName()).log(Level.SEVERE, null, ex);
-         }
-         }
-         }
-         }*/
+        try {
+            if(!ExecutorHandler.pExecutor.isShutdown()){
+                ExecutorHandler.pExecutor.execute(new Processor(page));
+            }           
+        } catch (InterruptedException ex) {
+            System.out.println("Interrupted");
+            Logger.getLogger(Downloader.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 }

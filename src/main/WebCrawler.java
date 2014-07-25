@@ -18,25 +18,17 @@ import threadhandle.ExecutorHandler;
  */
 public class WebCrawler {
     
-    public static List<Page> seeds ;
-    
+    public static List<String> seeds = Collections.synchronizedList(new ArrayList<String>());
     public static ExecutorHandler ex;
-    public static final int numberOfURLs = 100;
-    public static int processedURLS = 2;
-
-    public static void test(){
-        System.out.println("Done");
-    }
-    
+    public static List<Page> donePages = Collections.synchronizedList(new ArrayList<Page>());
+    public static final int numberOfURLs = 15; 
     
     public static void main(String[] args) {
 
-        seeds = Collections.synchronizedList(new ArrayList<Page>());
-        Page u1 = new Page("http://www.wikipedia.com");
-        Page u2 = new Page("http://www.cnet.com");
+        String u1 = "http://www.wikipedia.com";
+        String u2 = "http://www.cnet.com";
         seeds.add(u1);
         seeds.add(u2);
-
         ex = new ExecutorHandler(5, 5, seeds);
         ex.start();
 
