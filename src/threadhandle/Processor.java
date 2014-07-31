@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import page_utils.Page;
+import webcrawler.GUIv2;
 
 /**
  *
@@ -30,6 +31,15 @@ public class Processor implements Runnable {
 
     @Override
     public void run() {
+        int rowIndex = -1;
+        for (int i = 0; i < GUIv2.dtm.getRowCount(); i++) {
+            if (processingPage.getLink().equalsIgnoreCase(
+                    (String)(GUIv2.dtm.getValueAt(i, 0)))){                       
+                GUIv2.dtm.setValueAt("Processing", i, 2);
+                rowIndex = i;
+                break;
+            }                
+        }
         while (this.matcher.find()) {
             String url = this.matcher.group();
             if (!this.URLs.contains(url)) {
@@ -59,6 +69,9 @@ public class Processor implements Runnable {
             }
         }
         this.processingPage.setReferences(URLs);
+        GUIv2.dtm.setValueAt(100, rowIndex, 1);
+        GUIv2.dtm.setValueAt("Processed", rowIndex, 2);
+        GUIv2.dtm.setValueAt(URLs.size(), rowIndex, 3);
     }
 
 }

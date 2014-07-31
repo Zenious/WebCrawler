@@ -11,6 +11,7 @@ import main.WebCrawler;
 import page_utils.Page;
 import page_utils.PageRead;
 import webcrawler.GUIv2;
+import static webcrawler.GUIv2.dtm;
 
 /**
  *
@@ -27,7 +28,7 @@ public class Downloader implements Runnable {
 
     @Override
     public void run() {
-        int rowIndex = 0;
+        int rowIndex = -1;
         for (int i = 0; i < GUIv2.dtm.getRowCount(); i++) {
             if (page.getLink().equalsIgnoreCase(
                     (String)(GUIv2.dtm.getValueAt(i, 0)))){                       
@@ -35,6 +36,17 @@ public class Downloader implements Runnable {
                 rowIndex = i;
                 break;
             }                
+        }
+        if (rowIndex == -1) {
+            int emptyRow = 0;
+            dtm.addRow(new Object[][]{null, null, null, null});
+            while (dtm.getValueAt(emptyRow, 0) != null) {
+                emptyRow++;
+            }
+            dtm.setValueAt(page.getLink(), emptyRow, 0);
+            dtm.setValueAt(0, emptyRow, 1);
+            dtm.setValueAt("Downloading", emptyRow, 2);
+            rowIndex = emptyRow;
         }
         if(ExecutorHandler.donePagesCount >= main.WebCrawler.numberOfURLs){
             return;
@@ -48,6 +60,7 @@ public class Downloader implements Runnable {
         if (ExecutorHandler.donePagesCount < main.WebCrawler.numberOfURLs) {            
             WebCrawler.donePages.add(page);
             GUIv2.dtm.setValueAt("Downloaded", rowIndex, 2);
+            GUIv2.dtm.setValueAt(50, rowIndex, 1);
             System.out.println(WebCrawler.donePages.size() + " [+] Downloaded: " + page.getLink());
             ExecutorHandler.donePagesCount++;
         }       
