@@ -5,7 +5,6 @@
  */
 package threadhandle;
 
-import com.sun.corba.se.impl.presentation.rmi.ExceptionHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import main.WebCrawler;
@@ -27,6 +26,10 @@ public class Downloader implements Runnable {
 
     @Override
     public void run() {
+        
+        if(ExecutorHandler.donePagesCount >= main.WebCrawler.numberOfURLs){
+            return;
+        }
 
         sb = PageRead.readPage(page.getLink());
         if (sb == null) {

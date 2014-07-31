@@ -9,12 +9,9 @@ package threadhandle;
  *
  * @author crimson
  */
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import main.WebCrawler;
@@ -30,7 +27,7 @@ public class ExecutorHandler extends Thread {
     
     public static int donePagesCount = 0;
     public static List<String> toDo;
-    public static URLQueue queue = new URLQueue();
+    public static URLQueue dlQueue = new URLQueue();
 
     public ExecutorHandler(int d, int p, List<String> seeds) {
         this.numOfDownloadThreads = 5;
@@ -46,13 +43,12 @@ public class ExecutorHandler extends Thread {
         for (String seed : toDo) {
             for (String dupCheck : toDo){
                 if(!seed.equalsIgnoreCase(dupCheck)){
-                    queue.addURL(seed);
+                    dlQueue.addURL(seed);
                 }
             }            
         }
-        queue.setWaiting(true);
-        while (queue.isWaiting()) {
-            ExecutorHandler.dlExecutor.execute(new Downloader(new Page(queue.getURL())));
+        while (dlQueue.isWaiting() || dlQueue.hasQueued()) {
+            ExecutorHandler.dlExecutor.execute(new Downloader(new Page(dlQueue.getURL())));
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException ex) {

@@ -14,7 +14,7 @@ import java.util.Queue;
  */
 public class URLQueue{
     private final Queue<String> toDo = new LinkedList<>();
-    private boolean isWaiting = false;
+    private boolean isWaiting = true;
 
     public boolean isWaiting(){
         return isWaiting;
@@ -38,6 +38,10 @@ public class URLQueue{
     
     public synchronized String getURL(){
         return toDo.poll();      
+    }
+    
+    public void clear(){
+        toDo.clear();
     }
    
 }
