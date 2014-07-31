@@ -30,8 +30,8 @@ public class ExecutorHandler extends Thread {
     public static URLQueue dlQueue = new URLQueue();
 
     public ExecutorHandler(int d, int p, List<String> seeds) {
-        this.numOfDownloadThreads = 5;
-        this.numOfProcessThreads = 5;
+        this.numOfDownloadThreads = d;
+        this.numOfProcessThreads = p;
         //this.seeds = seeds;
         this.toDo = seeds;
         ExecutorHandler.dlExecutor = Executors.newFixedThreadPool(numOfDownloadThreads);
@@ -40,12 +40,16 @@ public class ExecutorHandler extends Thread {
 
     @Override
     public void run() {
-        for (String seed : toDo) {
-            for (String dupCheck : toDo){
-                if(!seed.equalsIgnoreCase(dupCheck)){
-                    dlQueue.addURL(seed);
-                }
-            }            
+        if(toDo.size()==1){
+            dlQueue.addURL(toDo.get(0));
+        }else{
+            for (String seed : toDo) {
+                for (String dupCheck : toDo){
+                    if(!seed.equalsIgnoreCase(dupCheck)){
+                        dlQueue.addURL(seed);
+                    }
+                }            
+            }
         }
         while (dlQueue.isWaiting() || dlQueue.hasQueued()) {
             ExecutorHandler.dlExecutor.execute(new Downloader(new Page(dlQueue.getURL())));
