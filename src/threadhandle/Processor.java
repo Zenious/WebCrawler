@@ -6,10 +6,8 @@
 package threadhandle;
 
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import main.WebCrawler;
 import page_utils.Page;
 
 /**
@@ -50,11 +48,12 @@ public class Processor implements Runnable {
 
             if (!pageProcessed) {
                 if (ExecutorHandler.donePagesCount >= main.WebCrawler.numberOfURLs) {
-                    ExecutorHandler.queue.setWaiting(false);
+                    ExecutorHandler.dlQueue.setWaiting(false);
+                    ExecutorHandler.dlQueue.clear();
                 } else {
-                    if (!ExecutorHandler.queue.isQueued(url)) {
+                    if (!ExecutorHandler.dlQueue.isQueued(url) && ExecutorHandler.dlQueue.isWaiting()) {
                         System.out.println(processingPage.getLink() + " | " + url);
-                        ExecutorHandler.queue.addURL(url);
+                        ExecutorHandler.dlQueue.addURL(url);
                     }
                 }
             }
