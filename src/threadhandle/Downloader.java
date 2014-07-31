@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 import main.WebCrawler;
 import page_utils.Page;
 import page_utils.PageRead;
+import webcrawler.GUIv2;
 
 /**
  *
@@ -27,7 +28,15 @@ public class Downloader implements Runnable {
 
     @Override
     public void run() {
-
+        int rowIndex = 0;
+        for (int i = 0; i < GUIv2.dtm.getRowCount(); i++) {
+            if (page.getLink().equalsIgnoreCase(
+                    (String)(GUIv2.dtm.getValueAt(i, 0)))){                       
+                GUIv2.dtm.setValueAt("Downloading", i, 2);
+                rowIndex = i;
+                break;
+            }                
+        }
         sb = PageRead.readPage(page.getLink());
         if (sb == null) {
             return;
@@ -35,10 +44,10 @@ public class Downloader implements Runnable {
         page.setContent(sb);
         if (ExecutorHandler.donePagesCount < main.WebCrawler.numberOfURLs) {            
             WebCrawler.donePages.add(page);
+            GUIv2.dtm.setValueAt("Downloaded", rowIndex, 2);
             System.out.println(WebCrawler.donePages.size() + " [+] Downloaded: " + page.getLink());
             ExecutorHandler.donePagesCount++;
-        }        
-
+        }       
         try {
             if(!ExecutorHandler.pExecutor.isShutdown()){
                 ExecutorHandler.pExecutor.execute(new Processor(page));

@@ -32,9 +32,18 @@ public class ExecutorHandler extends Thread {
     public static List<String> toDo;
     public static URLQueue queue = new URLQueue();
 
-    public ExecutorHandler(int d, int p, List<String> seeds) {
+    public ExecutorHandler(List<String> seeds) {
         this.numOfDownloadThreads = 5;
         this.numOfProcessThreads = 5;
+        //this.seeds = seeds;
+        this.toDo = seeds;
+        ExecutorHandler.dlExecutor = Executors.newFixedThreadPool(numOfDownloadThreads);
+        ExecutorHandler.pExecutor = Executors.newFixedThreadPool(numOfProcessThreads);
+    }
+
+    public ExecutorHandler(int d, int p, List<String> seeds) {
+        this.numOfDownloadThreads = d;
+        this.numOfProcessThreads = p;
         //this.seeds = seeds;
         this.toDo = seeds;
         ExecutorHandler.dlExecutor = Executors.newFixedThreadPool(numOfDownloadThreads);

@@ -8,12 +8,19 @@ package webcrawler;
 
 import java.awt.Component;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import javax.swing.JProgressBar;
 import javax.swing.JTable;
 import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
+import static main.WebCrawler.ex;
+import static main.WebCrawler.seeds;
+import page_utils.Page;
+import threadhandle.ExecutorHandler;
 
 /**
  *
@@ -21,6 +28,12 @@ import javax.swing.table.TableCellRenderer;
  */
 public class GUIv2 extends javax.swing.JFrame {
     private int emptyRow = 0;
+    public static List<String> seeds = Collections.synchronizedList(new ArrayList<String>());
+    public static ExecutorHandler ex;
+    public static List<Page> donePages = Collections.synchronizedList(new ArrayList<Page>());
+    public static final int numberOfURLs = 15; 
+    public static DefaultTableModel dtm;
+    
         
     /**
      * Creates new form GUIv2
@@ -69,14 +82,14 @@ public class GUIv2 extends javax.swing.JFrame {
 
             },
             new String [] {
-                "URL", " ", "Status", "Download Speed", "No of References"
+                "URL", " ", "Status", "No Of References"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class
+                java.lang.String.class, java.lang.Object.class, java.lang.String.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, true, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -86,7 +99,6 @@ public class GUIv2 extends javax.swing.JFrame {
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
-
         });
         jTable1.getColumn (" ").setCellRenderer(new ProgressBarRender());
         jTable1.setFillsViewportHeight (true);
@@ -103,14 +115,6 @@ public class GUIv2 extends javax.swing.JFrame {
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
-            }
-        });
-        jButton2.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                jButton2FocusGained(evt);
-            }
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                jButton2FocusLost(evt);
             }
         });
 
@@ -205,7 +209,8 @@ public class GUIv2 extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        DefaultTableModel dtm = (DefaultTableModel) jTable1.getModel();
+        seeds.add(jTextField1.getText());
+        dtm = (DefaultTableModel) jTable1.getModel();
         if (dtm.getRowCount()<=emptyRow+1){
             dtm.addRow(new Object[][] {null, null, null, null});
         }
@@ -223,24 +228,19 @@ public class GUIv2 extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-            DefaultTableModel dtm = (DefaultTableModel) jTable1.getModel();
-            for (int i = 0; i < dtm.getRowCount(); i++) {
-                if(dtm.getValueAt(i, 2).toString().equals("Queued")){
-                UrlHanderWorker uhw = new UrlHanderWorker(dtm, jTextField1.getText(), i);
-                uhw.execute();
-                }
-            }
+            System.out.println(seeds.size());
+            ex = new ExecutorHandler(5,5,seeds);
+            ex.start();
+
+            //DefaultTableModel dtm = (DefaultTableModel) jTable1.getModel();
+          //  for (int i = 0; i < dtm.getRowCount(); i++) {
+          //    if(dtm.getValueAt(i, 2).toString().equals("Queued")){
+          //      UrlHanderWorker uhw = new UrlHanderWorker(dtm, jTextField1.getText(), 0);
+          //      uhw.execute();
+            //    }
+            //}
 
     }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void jButton2FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jButton2FocusGained
-        // TODO add your handling code here:
-
-    }//GEN-LAST:event_jButton2FocusGained
-
-    private void jButton2FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jButton2FocusLost
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2FocusLost
 
     private void jTextField1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextField1FocusGained
         // TODO add your handling code here:
@@ -310,33 +310,6 @@ public class GUIv2 extends javax.swing.JFrame {
         }
     }
     
-    public class UrlHanderWorker extends SwingWorker<Object, Object>{
-        private DefaultTableModel dtm;
-        private String url;
-        private int row;
-        
-        public UrlHanderWorker(DefaultTableModel dtm, String url, int row){
-            this.dtm = dtm;
-            this.url = url;
-            this.row = row;
-        }
-        
-        @Override
-        protected Object doInBackground() throws Exception {
-            int timer = 0;
-            dtm.setValueAt("Downloading", row, 2);
-            while (timer != 105){
-                dtm.setValueAt(timer, row, 1);
-                Thread.sleep(1000);
-                timer +=5;
-                if (timer == 50) dtm.setValueAt("Processing", row, 2);
-            }
-            dtm.setValueAt("Processed", row, 2);
-            dtm.setValueAt(0, row, 4);
-            return this;
-        }
-        
-    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
