@@ -68,7 +68,6 @@ public class ProcessThread implements Runnable{
             link.setReferences(references);
             System.out.println("Processed "+link.getLink());
             GUI.updateList(link.getLink());
-            GUI.jList1.repaint();
             System.out.println(link.getLink());
             System.out.println(link.getContent()+"\n\n\n");
             
