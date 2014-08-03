@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import main.WebCrawler;
 import page_utils.Page;
+import webcrawler.GUIv2;
 
 public class ExecutorHandler extends Thread {
 
@@ -63,7 +64,7 @@ public class ExecutorHandler extends Thread {
         pExecutor.shutdown();
 
         int count = 1;
-        for(Page page: WebCrawler.donePages){
+        for(Page page: GUIv2.donePages){
             System.out.println(count + " | " + page.getLink() + " | " + page.getReferences().size());
             count++;
         }

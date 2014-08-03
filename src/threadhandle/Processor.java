@@ -49,7 +49,7 @@ public class Processor implements Runnable {
             }
 
             boolean pageProcessed = false;
-            for (Page page : main.WebCrawler.donePages) {
+            for (Page page : GUIv2.donePages) {
                 if (page.getLink().equalsIgnoreCase(url)) {
                     pageProcessed = true;
                     break;
@@ -57,7 +57,7 @@ public class Processor implements Runnable {
             }
 
             if (!pageProcessed) {
-                if (ExecutorHandler.donePagesCount >= main.WebCrawler.numberOfURLs) {
+                if (ExecutorHandler.donePagesCount >= GUIv2.numberOfURLs) {
                     ExecutorHandler.dlQueue.setWaiting(false);
                     ExecutorHandler.dlQueue.clear();
                 } else {

@@ -48,7 +48,7 @@ public class Downloader implements Runnable {
             dtm.setValueAt("Downloading", emptyRow, 2);
             rowIndex = emptyRow;
         }
-        if(ExecutorHandler.donePagesCount >= main.WebCrawler.numberOfURLs){
+        if(ExecutorHandler.donePagesCount >= GUIv2.numberOfURLs){
             return;
         }
 
@@ -57,11 +57,11 @@ public class Downloader implements Runnable {
             return;
         }
         page.setContent(sb);
-        if (ExecutorHandler.donePagesCount < main.WebCrawler.numberOfURLs) {            
-            WebCrawler.donePages.add(page);
+        if (ExecutorHandler.donePagesCount < GUIv2.numberOfURLs) {            
+            GUIv2.donePages.add(page);
             GUIv2.dtm.setValueAt("Downloaded", rowIndex, 2);
             GUIv2.dtm.setValueAt(50, rowIndex, 1);
-            System.out.println(WebCrawler.donePages.size() + " [+] Downloaded: " + page.getLink());
+            System.out.println(GUIv2.donePages.size() + " [+] Downloaded: " + page.getLink());
             ExecutorHandler.donePagesCount++;
         }       
         try {
