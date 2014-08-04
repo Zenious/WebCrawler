@@ -5,6 +5,7 @@
  */
 package webcrawler;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.event.MouseEvent;
@@ -43,7 +44,7 @@ public class GUIv2 extends javax.swing.JFrame {
     public static List<String> seeds = Collections.synchronizedList(new ArrayList<String>());
     public static ExecutorHandler ex;
     public static List<Page> donePages = Collections.synchronizedList(new ArrayList<Page>());
-    public static final int numberOfURLs = 15;
+    public static int numberOfURLs = 15;
     public static DefaultTableModel dtm;
     private int noOfDownload = 5; 
     private int noOfProcess = 5;
@@ -67,11 +68,12 @@ public class GUIv2 extends javax.swing.JFrame {
     private void initComponents() {
 
         jFrame1 = new javax.swing.JFrame();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTextArea2 = new javax.swing.JTextArea();
-        jLabel1 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList();
+        sourceCodePanel = new javax.swing.JScrollPane();
+        sourceCodeArea = new javax.swing.JTextArea();
+        sourceCodeLabel = new javax.swing.JLabel();
+        referencePanel = new javax.swing.JScrollPane();
+        referenceList = new javax.swing.JList();
+        referenceLabel = new javax.swing.JLabel();
         pageScrollPane = new javax.swing.JScrollPane();
         pageTable = new javax.swing.JTable(){
             public String getToolTipText(MouseEvent event){
@@ -92,30 +94,36 @@ public class GUIv2 extends javax.swing.JFrame {
         buttonPanel = new javax.swing.JPanel();
         addButton = new javax.swing.JButton();
         submitButton = new javax.swing.JButton();
+        clearBtn = new javax.swing.JButton();
         seedPanel = new javax.swing.JPanel();
         seedInput = new javax.swing.JTextField();
         seedLabel = new javax.swing.JLabel();
+        statusLabel = new javax.swing.JLabel();
+        statusCode = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         closeBtn = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
         downloadThreadMenu = new javax.swing.JMenu();
         processingThreadMenu = new javax.swing.JMenu();
 
-        jTextArea2.setEditable(false);
-        jTextArea2.setColumns(20);
-        jTextArea2.setLineWrap(true);
-        jTextArea2.setRows(5);
-        jScrollPane2.setViewportView(jTextArea2);
+        sourceCodeArea.setEditable(false);
+        sourceCodeArea.setColumns(20);
+        sourceCodeArea.setLineWrap(true);
+        sourceCodeArea.setRows(5);
+        sourceCodePanel.setViewportView(sourceCodeArea);
 
-        jLabel1.setText("Source Code:");
+        sourceCodeLabel.setText("Source Code:");
 
-        jList1.setModel(new javax.swing.AbstractListModel() {
+        referenceList.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
-        jScrollPane1.setViewportView(jList1);
+        referencePanel.setViewportView(referenceList);
+
+        referenceLabel.setText("References:");
 
         javax.swing.GroupLayout jFrame1Layout = new javax.swing.GroupLayout(jFrame1.getContentPane());
         jFrame1.getContentPane().setLayout(jFrame1Layout);
@@ -124,24 +132,27 @@ public class GUIv2 extends javax.swing.JFrame {
             .addGroup(jFrame1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(sourceCodePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 342, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(sourceCodeLabel))
+                .addGap(18, 18, 18)
+                .addGroup(jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jFrame1Layout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 342, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE))
-                    .addGroup(jFrame1Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addComponent(referenceLabel)
+                        .addGap(0, 74, Short.MAX_VALUE))
+                    .addComponent(referencePanel))
                 .addContainerGap())
         );
         jFrame1Layout.setVerticalGroup(
             jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jFrame1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1)
+                .addGroup(jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(sourceCodeLabel)
+                    .addComponent(referenceLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 261, Short.MAX_VALUE)
-                    .addComponent(jScrollPane2))
+                    .addComponent(referencePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 261, Short.MAX_VALUE)
+                    .addComponent(sourceCodePanel))
                 .addGap(43, 43, 43))
         );
 
@@ -181,14 +192,15 @@ public class GUIv2 extends javax.swing.JFrame {
                     int first = e.getFirstIndex();
                     int last = e.getLastIndex();
                     try{
-                        jTextArea2.setText(donePages.get(last).getContent().toString());
+                        sourceCodeArea.setText(donePages.get(last).getContent().toString());
                         DefaultListModel model = new DefaultListModel();
                         for (String ref : donePages.get(last).getReferences()){
                             model.addElement(ref);
                         }
-                        jList1.setModel(model);
+                        referenceList.setModel(model);
                     }catch(InterruptedException error){}
                     jFrame1.pack();
+                    jFrame1.setTitle("Source Code & References - "+ donePages.get(last).getLink());
                     jFrame1.setVisible(true);
                 } else if (e.getSource() == pageTable.getColumnModel().getSelectionModel()
                     && pageTable.getColumnSelectionAllowed()) {
@@ -219,6 +231,13 @@ public class GUIv2 extends javax.swing.JFrame {
             }
         });
 
+        clearBtn.setText("Clear");
+        clearBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout buttonPanelLayout = new javax.swing.GroupLayout(buttonPanel);
         buttonPanel.setLayout(buttonPanelLayout);
         buttonPanelLayout.setHorizontalGroup(
@@ -229,15 +248,20 @@ public class GUIv2 extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(submitButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(6, 6, 6))
+            .addGroup(buttonPanelLayout.createSequentialGroup()
+                .addGap(35, 35, 35)
+                .addComponent(clearBtn)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         buttonPanelLayout.setVerticalGroup(
             buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(buttonPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(submitButton)
                     .addComponent(addButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(clearBtn))
         );
 
         seedInput.setText("Enter Website...");
@@ -257,15 +281,23 @@ public class GUIv2 extends javax.swing.JFrame {
 
         seedLabel.setText("Seed :");
 
+        statusLabel.setText("Status : ");
+
+        statusCode.setForeground(new java.awt.Color(0, 255, 0));
+        statusCode.setText("Ready!");
+
         javax.swing.GroupLayout seedPanelLayout = new javax.swing.GroupLayout(seedPanel);
         seedPanel.setLayout(seedPanelLayout);
         seedPanelLayout.setHorizontalGroup(
             seedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, seedPanelLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(seedLabel)
+                .addGroup(seedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(statusLabel)
+                    .addComponent(seedLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(seedInput, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(seedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(seedInput, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(statusCode))
                 .addGap(8, 8, 8))
         );
         seedPanelLayout.setVerticalGroup(
@@ -275,7 +307,10 @@ public class GUIv2 extends javax.swing.JFrame {
                 .addGroup(seedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(seedInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(seedLabel))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
+                .addGroup(seedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(statusLabel)
+                    .addComponent(statusCode)))
         );
 
         jMenu1.setText("File");
@@ -291,6 +326,14 @@ public class GUIv2 extends javax.swing.JFrame {
         jMenuBar1.add(jMenu1);
 
         jMenu2.setText("Edit");
+
+        jMenuItem1.setText("Set Number of Website to Crawl");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jMenuItem1);
 
         downloadThreadMenu.setText("Number of Download Threads");
         jMenu2.add(downloadThreadMenu);
@@ -351,7 +394,7 @@ public class GUIv2 extends javax.swing.JFrame {
                         .addComponent(seedPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(16, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -360,8 +403,9 @@ public class GUIv2 extends javax.swing.JFrame {
                 .addComponent(pageScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(seedPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(seedPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(6, 6, 6))
         );
 
         pack();
@@ -399,7 +443,8 @@ public class GUIv2 extends javax.swing.JFrame {
         // TODO add your handling code here:
         ex = new ExecutorHandler(noOfDownload, noOfProcess, seeds);
         ex.start();
-
+        statusCode.setText("Crawling...");
+        statusCode.setForeground(Color.red);
             //DefaultTableModel dtm = (DefaultTableModel) jTable1.getModel();
         //  for (int i = 0; i < dtm.getRowCount(); i++) {
         //    if(dtm.getValueAt(i, 2).toString().equals("Queued")){
@@ -428,6 +473,32 @@ public class GUIv2 extends javax.swing.JFrame {
         // TODO add your handling code here:
         System.exit(ABORT);
     }//GEN-LAST:event_closeBtnActionPerformed
+
+    private void clearBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearBtnActionPerformed
+        // TODO add your handling code here:
+        seeds.clear();
+        donePages.clear();
+        dtm.setRowCount(0);
+    }//GEN-LAST:event_clearBtnActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        // TODO add your handling code here:
+        int urlsSize = 0;
+        do{
+            String input = JOptionPane.showInputDialog("Enter number of website to crawl.");
+            try{
+                urlsSize = Integer.parseInt(input);
+                if (urlsSize<=0){
+                    JOptionPane.showMessageDialog(pageScrollPane, "Number of Urls cannot be less than 1.");
+                    urlsSize = 0;
+                }
+            }catch (NumberFormatException e){
+                urlsSize = 0;
+            }
+        }while(urlsSize==0);
+        numberOfURLs = urlsSize;
+       
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -486,24 +557,29 @@ public class GUIv2 extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addButton;
     private javax.swing.JPanel buttonPanel;
+    private javax.swing.JButton clearBtn;
     private javax.swing.JMenuItem closeBtn;
     private javax.swing.JMenu downloadThreadMenu;
     private javax.swing.ButtonGroup downloadThreadBG;
     private javax.swing.JFrame jFrame1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JList jList1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextArea jTextArea2;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JScrollPane pageScrollPane;
     private javax.swing.JTable pageTable;
     private javax.swing.JMenu processingThreadMenu;
+    private javax.swing.JLabel referenceLabel;
+    private javax.swing.JList referenceList;
+    private javax.swing.JScrollPane referencePanel;
     private javax.swing.JTextField seedInput;
     private javax.swing.JLabel seedLabel;
     private javax.swing.JPanel seedPanel;
+    private javax.swing.JTextArea sourceCodeArea;
+    private javax.swing.JLabel sourceCodeLabel;
+    private javax.swing.JScrollPane sourceCodePanel;
+    public static javax.swing.JLabel statusCode;
+    private javax.swing.JLabel statusLabel;
     private javax.swing.JButton submitButton;
     // End of variables declaration//GEN-END:variables
 }

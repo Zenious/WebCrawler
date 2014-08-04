@@ -9,6 +9,7 @@ package threadhandle;
  *
  * @author crimson
  */
+import java.awt.Color;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -65,6 +66,8 @@ public class ExecutorHandler extends Thread {
 
         int count = 1;
         for(Page page: GUIv2.donePages){
+            GUIv2.statusCode.setText(donePagesCount + " Website Crawled!");
+            GUIv2.statusCode.setForeground(Color.GREEN);
             System.out.println(count + " | " + page.getLink() + " | " + page.getReferences().size());
             count++;
         }
