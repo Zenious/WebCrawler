@@ -30,8 +30,7 @@ public class Downloader implements Runnable {
     public void run() {
         int rowIndex = -1;
         for (int i = 0; i < GUIv2.dtm.getRowCount(); i++) {
-            if (page.getLink().equalsIgnoreCase(
-                    (String)(GUIv2.dtm.getValueAt(i, 0)))){                       
+            if (page.getLink().equalsIgnoreCase((String)(GUIv2.dtm.getValueAt(i, 0)))){                       
                 GUIv2.dtm.setValueAt("Downloading", i, 2);
                 rowIndex = i;
                 break;

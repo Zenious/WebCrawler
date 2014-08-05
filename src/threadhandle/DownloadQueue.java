@@ -12,7 +12,7 @@ import java.util.Queue;
  *
  * @author crimson
  */
-public class URLQueue{
+public class DownloadQueue{
     private final Queue<String> toDo = new LinkedList<>();
     private boolean isWaiting = true;
 
