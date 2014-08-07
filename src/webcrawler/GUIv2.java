@@ -579,7 +579,7 @@ public class GUIv2 extends javax.swing.JFrame {
                     }
                 }
             }
-            for (Page page : donePages){
+            for (Page page : donePages) {
                 dtm = (DefaultTableModel) pageTable.getModel();
                 dtm.addRow(new Object[][]{null, null, null, null});
                 while (dtm.getValueAt(emptyRow, 0) != null) {
@@ -595,8 +595,26 @@ public class GUIv2 extends javax.swing.JFrame {
 
     private void saveMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveMenuActionPerformed
         // TODO add your handling code here:
-        int returnVal = jFileChooser1.showDialog(openMenu, "Save");
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
+        boolean acceptable = true;
+        do {
+            int returnVal = jFileChooser1.showSaveDialog(openMenu);
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                File file = jFileChooser1.getSelectedFile();
+                if (file.exists()) {
+                    int option = JOptionPane.showConfirmDialog(pageScrollPane, "Overwrite File?");
+                    if (option == JOptionPane.NO_OPTION) {
+                        acceptable = false;
+                    }else{
+                        acceptable = true;
+                    }
+                }else{
+                    acceptable = true;
+                }
+            } else {
+                break;
+            }
+        } while (!acceptable);
+        if (acceptable) {
             FileOutputStream fos = null;
             try {
                 File file = jFileChooser1.getSelectedFile();
