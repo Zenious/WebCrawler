@@ -6,13 +6,14 @@
 
 package page_utils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  *
  * @author Zheng Wei
  */
-public class Page {
+public class Page implements Serializable{
     private String link;
     private StringBuilder content;
     private ArrayList<String> references;
