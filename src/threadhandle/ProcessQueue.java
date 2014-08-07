@@ -8,15 +8,16 @@ package threadhandle;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import page_utils.Page;
 /**
  *
  * @author crimson
  */
-public class DownloadQueue{
-    private final Queue<String> toDo = new LinkedList<>();
+public class ProcessQueue {
+    private final Queue<Page> toDo = new LinkedList<>();
     private boolean isWaiting = true;
 
-    public synchronized boolean isWaiting(){
+    public boolean isWaiting(){
         return isWaiting;
     }
     
@@ -28,20 +29,19 @@ public class DownloadQueue{
         return this.toDo.peek() != null;
     }
     
-    public synchronized boolean isQueued(String url){
-        return toDo.contains(url);
+    public synchronized boolean isQueued(Page page){
+        return toDo.contains(page);
     }
     
-    public synchronized void addURL(String url){
-        toDo.add(url);                
+    public synchronized void addPage(Page page){
+        toDo.add(page);                
     }
     
-    public synchronized String getURL(){
+    public synchronized Page getPage(){
         return toDo.poll();      
     }
     
     public void clear(){
         toDo.clear();
     }
-   
 }

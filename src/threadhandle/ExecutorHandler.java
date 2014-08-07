@@ -25,11 +25,10 @@ public class ExecutorHandler extends Thread {
 
     public static ExecutorService dlExecutor;
     public static ExecutorService pExecutor;
-    
-    public static int donePagesCount = 0;
+
     public static List<String> toDo;
     public static DownloadQueue dlQueue = new DownloadQueue();
-    public static DownloadQueue qQueue = new DownloadQueue();
+    public static ProcessQueue qQueue = new ProcessQueue();
 
     public ExecutorHandler(int d, int p, List<String> seeds) {
         this.numOfDownloadThreads = d;
@@ -52,27 +51,31 @@ public class ExecutorHandler extends Thread {
                 }            
             }
         }
+        System.out.println("Starting all Download Threads: " + numOfDownloadThreads);
+        for (int i = 0; i < this.numOfDownloadThreads; i++) {            
+            dlExecutor.execute(new Downloader());
+        }
+        System.out.println("Starting all Process Threads: " + numOfProcessThreads);
+        for (int i = 0; i < this.numOfProcessThreads; i++) {
+            pExecutor.execute(new Processor());
+        }
         
-        while (dlQueue.isWaiting() || dlQueue.hasQueued()) {
-            Page newPage = new Page(dlQueue.getURL());
-            if(GUIv2.donePages.contains(newPage)){
-                System.out.println(newPage.getLink()+" | has already been processed");
-                continue;
-            }
-            ExecutorHandler.dlExecutor.execute(new Downloader(newPage));
+        dlExecutor.shutdown();
+        pExecutor.shutdown();
+        
+        while (!dlExecutor.isTerminated() && !pExecutor.isTerminated()) {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException ex) {
                 Logger.getLogger(ExecutorHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        dlExecutor.shutdown();
-        pExecutor.shutdown();
-
+        System.out.println("Done");        
+        GUIv2.statusCode.setText(GUIv2.donePages.size() + " Website Crawled!");
+        GUIv2.statusCode.setForeground(Color.GREEN);
+        
         int count = 1;
-        for(Page page: GUIv2.donePages){
-            GUIv2.statusCode.setText(donePagesCount + " Website Crawled!");
-            GUIv2.statusCode.setForeground(Color.GREEN);
+        for(Page page: GUIv2.donePages){           
             System.out.println(count + " | " + page.getLink() + " | " + page.getReferences().size());
             count++;
         }

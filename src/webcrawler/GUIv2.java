@@ -8,6 +8,8 @@ package webcrawler;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Desktop;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -62,8 +64,15 @@ public class GUIv2 extends javax.swing.JFrame {
      */
     public GUIv2() {
         initComponents();
+        centerAlign();
     }
 
+    private void centerAlign() {
+        Dimension frame = Toolkit.getDefaultToolkit().getScreenSize();
+        int x = (int) (frame.width - this.getWidth()) / 2;
+        int y = (int) (frame.height - this.getHeight()) / 2;
+        setLocation(x, y);
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
