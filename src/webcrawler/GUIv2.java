@@ -91,11 +91,11 @@ public class GUIv2 extends javax.swing.JFrame {
         seedLabel = new javax.swing.JLabel();
         statusLabel = new javax.swing.JLabel();
         statusCode = new javax.swing.JLabel();
-        jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
+        menuBar = new javax.swing.JMenuBar();
+        fileMenu = new javax.swing.JMenu();
         closeBtn = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
+        editMenu = new javax.swing.JMenu();
+        noOfSitesMenu = new javax.swing.JMenuItem();
         downloadThreadMenu = new javax.swing.JMenu();
         processingThreadMenu = new javax.swing.JMenu();
 
@@ -301,7 +301,7 @@ public class GUIv2 extends javax.swing.JFrame {
                 .addComponent(statusCode)))
     );
 
-    jMenu1.setText("File");
+    fileMenu.setText("File");
 
     closeBtn.setText("Close");
     closeBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -309,22 +309,22 @@ public class GUIv2 extends javax.swing.JFrame {
             closeBtnActionPerformed(evt);
         }
     });
-    jMenu1.add(closeBtn);
+    fileMenu.add(closeBtn);
 
-    jMenuBar1.add(jMenu1);
+    menuBar.add(fileMenu);
 
-    jMenu2.setText("Edit");
+    editMenu.setText("Edit");
 
-    jMenuItem1.setText("Set Number of Websites to Crawl");
-    jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+    noOfSitesMenu.setText("Set Number of Websites to Crawl");
+    noOfSitesMenu.addActionListener(new java.awt.event.ActionListener() {
         public void actionPerformed(java.awt.event.ActionEvent evt) {
-            jMenuItem1ActionPerformed(evt);
+            noOfSitesMenuActionPerformed(evt);
         }
     });
-    jMenu2.add(jMenuItem1);
+    editMenu.add(noOfSitesMenu);
 
     downloadThreadMenu.setText("Number of Download Threads");
-    jMenu2.add(downloadThreadMenu);
+    editMenu.add(downloadThreadMenu);
     downloadThreadBG = new ButtonGroup();
     ArrayList<JCheckBoxMenuItem> downloadThreadChoices = new ArrayList<JCheckBoxMenuItem>();
     for(int i = 1; i<11; i++){
@@ -345,7 +345,7 @@ public class GUIv2 extends javax.swing.JFrame {
     }
 
     processingThreadMenu.setText("Number of Processing Threads");
-    jMenu2.add(processingThreadMenu);
+    editMenu.add(processingThreadMenu);
     ButtonGroup processThreadBG = new ButtonGroup();
 
     ArrayList<JCheckBoxMenuItem> processThreadChoices = new ArrayList<JCheckBoxMenuItem>();
@@ -366,9 +366,9 @@ public class GUIv2 extends javax.swing.JFrame {
         processThreadBG.add(checkbox);
     }
 
-    jMenuBar1.add(jMenu2);
+    menuBar.add(editMenu);
 
-    setJMenuBar(jMenuBar1);
+    setJMenuBar(menuBar);
 
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
     getContentPane().setLayout(layout);
@@ -469,7 +469,7 @@ public class GUIv2 extends javax.swing.JFrame {
         dtm.setRowCount(0);
     }//GEN-LAST:event_clearBtnActionPerformed
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+    private void noOfSitesMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_noOfSitesMenuActionPerformed
         // TODO add your handling code here:
         int urlsSize = 0;
         do{
@@ -486,7 +486,7 @@ public class GUIv2 extends javax.swing.JFrame {
         }while(urlsSize==0);
         numberOfURLs = urlsSize;
        
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+    }//GEN-LAST:event_noOfSitesMenuActionPerformed
 
     /**
      * @param args the command line arguments
@@ -549,11 +549,11 @@ public class GUIv2 extends javax.swing.JFrame {
     private javax.swing.JMenuItem closeBtn;
     private javax.swing.JMenu downloadThreadMenu;
     private javax.swing.ButtonGroup downloadThreadBG;
+    private javax.swing.JMenu editMenu;
+    private javax.swing.JMenu fileMenu;
     private javax.swing.JFrame jFrame1;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuBar menuBar;
+    private javax.swing.JMenuItem noOfSitesMenu;
     private javax.swing.JScrollPane pageScrollPane;
     private javax.swing.JTable pageTable;
     private javax.swing.JMenu processingThreadMenu;
