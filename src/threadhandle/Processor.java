@@ -43,6 +43,7 @@ public class Processor implements Runnable {
         while (this.matcher.find()) {
             String url = this.matcher.group();
             if (!this.URLs.contains(url)) {
+                System.out.println(processingPage.getLink() + " | " + url);
                 this.URLs.add(url);
             } else {
                 continue;
@@ -61,8 +62,7 @@ public class Processor implements Runnable {
                     ExecutorHandler.dlQueue.setWaiting(false);
                     ExecutorHandler.dlQueue.clear();
                 } else {
-                    if (!ExecutorHandler.dlQueue.isQueued(url) && ExecutorHandler.dlQueue.isWaiting()) {
-                        System.out.println(processingPage.getLink() + " | " + url);
+                    if (!ExecutorHandler.dlQueue.isQueued(url) && ExecutorHandler.dlQueue.isWaiting()) {                        
                         ExecutorHandler.dlQueue.addURL(url);
                     }
                 }

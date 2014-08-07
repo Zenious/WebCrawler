@@ -15,7 +15,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import main.WebCrawler;
 import page_utils.Page;
 import webcrawler.GUIv2;
 
@@ -53,8 +52,14 @@ public class ExecutorHandler extends Thread {
                 }            
             }
         }
+        
         while (dlQueue.isWaiting() || dlQueue.hasQueued()) {
-            ExecutorHandler.dlExecutor.execute(new Downloader(new Page(dlQueue.getURL())));
+            Page newPage = new Page(dlQueue.getURL());
+            if(GUIv2.donePages.contains(newPage)){
+                System.out.println(newPage.getLink()+" | has already been processed");
+                continue;
+            }
+            ExecutorHandler.dlExecutor.execute(new Downloader(newPage));
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException ex) {

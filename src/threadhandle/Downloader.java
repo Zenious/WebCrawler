@@ -7,7 +7,6 @@ package threadhandle;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import main.WebCrawler;
 import page_utils.Page;
 import page_utils.PageRead;
 import webcrawler.GUIv2;
