@@ -7,30 +7,21 @@ package webcrawler;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Container;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListModel;
 import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.JTable;
-import javax.swing.SwingWorker;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
-import static main.WebCrawler.ex;
-import static main.WebCrawler.seeds;
 import page_utils.Page;
 import threadhandle.ExecutorHandler;
 
@@ -182,233 +173,230 @@ public class GUIv2 extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        pageTable.getColumn (" ").setCellRenderer(new ProgressBarRender());
-        pageTable.setFillsViewportHeight (true);
+        pageTable.getColumn (
+
+            " ").setCellRenderer(new ProgressBarRender());
+        pageTable.setFillsViewportHeight (
+
+            true);
         pageScrollPane.setViewportView(pageTable);
-        ListSelectionListener listener = new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (e.getSource() == pageTable.getSelectionModel() && pageTable.getRowSelectionAllowed()) {
-                    int first = e.getFirstIndex();
-                    int last = e.getLastIndex();
-                    try{
-                        sourceCodeArea.setText(donePages.get(last).getContent().toString());
+        pageTable.addMouseListener ( new MouseAdapter() {
+
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    JTable target = (JTable) e.getSource();
+                    int row = target.getSelectedRow();
+                    int column = target.getSelectedColumn();
+                    try {
+                        sourceCodeArea.setText(donePages.get(row).getContent().toString());
                         DefaultListModel model = new DefaultListModel();
-                        for (String ref : donePages.get(last).getReferences()){
+                        for (String ref : donePages.get(row).getReferences()) {
                             model.addElement(ref);
                         }
                         referenceList.setModel(model);
-                    }catch(InterruptedException error){}
+                    } catch (InterruptedException error) {
+                    }
                     jFrame1.pack();
-                    jFrame1.setTitle("Source Code & References - "+ donePages.get(last).getLink());
+                    jFrame1.setTitle("Source Code & References - " + donePages.get(row).getLink());
                     jFrame1.setVisible(true);
-                } else if (e.getSource() == pageTable.getColumnModel().getSelectionModel()
-                    && pageTable.getColumnSelectionAllowed()) {
-                    int first = e.getFirstIndex();
-                    int last = e.getLastIndex();
-                    System.out.print(first);
-                    System.out.print(last);
-                }
-                if (e.getValueIsAdjusting()) {
-                    System.out.println("The mouse button has not yet been released");
                 }
             }
-        };
-        pageTable.getColumnModel().getSelectionModel().addListSelectionListener(listener);
-        pageTable.getSelectionModel().addListSelectionListener(listener);
-
-        addButton.setLabel("Add");
-        addButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addButtonActionPerformed(evt);
-            }
-        });
-
-        submitButton.setLabel("Start");
-        submitButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                submitButtonActionPerformed(evt);
-            }
-        });
-
-        clearBtn.setText("Clear");
-        clearBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                clearBtnActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout buttonPanelLayout = new javax.swing.GroupLayout(buttonPanel);
-        buttonPanel.setLayout(buttonPanelLayout);
-        buttonPanelLayout.setHorizontalGroup(
-            buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(buttonPanelLayout.createSequentialGroup()
-                .addGap(8, 8, 8)
-                .addComponent(addButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(submitButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(6, 6, 6))
-            .addGroup(buttonPanelLayout.createSequentialGroup()
-                .addGap(35, 35, 35)
-                .addComponent(clearBtn)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        buttonPanelLayout.setVerticalGroup(
-            buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(buttonPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(submitButton)
-                    .addComponent(addButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(clearBtn))
-        );
-
-        seedInput.setText("Enter Website...");
-        seedInput.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                seedInputActionPerformed(evt);
-            }
-        });
-        seedInput.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                seedInputFocusGained(evt);
-            }
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                seedInputFocusLost(evt);
-            }
-        });
-
-        seedLabel.setText("Seed :");
-
-        statusLabel.setText("Status : ");
-
-        statusCode.setForeground(new java.awt.Color(0, 255, 0));
-        statusCode.setText("Ready!");
-
-        javax.swing.GroupLayout seedPanelLayout = new javax.swing.GroupLayout(seedPanel);
-        seedPanel.setLayout(seedPanelLayout);
-        seedPanelLayout.setHorizontalGroup(
-            seedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, seedPanelLayout.createSequentialGroup()
-                .addGroup(seedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(statusLabel)
-                    .addComponent(seedLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(seedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(seedInput, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(statusCode))
-                .addGap(8, 8, 8))
-        );
-        seedPanelLayout.setVerticalGroup(
-            seedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(seedPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(seedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(seedInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(seedLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
-                .addGroup(seedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(statusLabel)
-                    .addComponent(statusCode)))
-        );
-
-        jMenu1.setText("File");
-
-        closeBtn.setText("Close");
-        closeBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                closeBtnActionPerformed(evt);
-            }
-        });
-        jMenu1.add(closeBtn);
-
-        jMenuBar1.add(jMenu1);
-
-        jMenu2.setText("Edit");
-
-        jMenuItem1.setText("Set Number of Website to Crawl");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
-            }
-        });
-        jMenu2.add(jMenuItem1);
-
-        downloadThreadMenu.setText("Number of Download Threads");
-        jMenu2.add(downloadThreadMenu);
-        downloadThreadBG = new ButtonGroup();
-        ArrayList<JCheckBoxMenuItem> downloadThreadChoices = new ArrayList<JCheckBoxMenuItem>();
-        for(int i = 1; i<11; i++){
-            downloadThreadChoices.add(new JCheckBoxMenuItem(String.valueOf(i)));
-        }
-        for(JCheckBoxMenuItem checkbox : downloadThreadChoices){
-            if (checkbox.getText().equals(String.valueOf(noOfDownload))){
-                checkbox.setSelected(true);
-            }
-            checkbox.addChangeListener(new ChangeListener() {
-                public void stateChanged(ChangeEvent changeEvent){
-                    JCheckBoxMenuItem checkbox = (JCheckBoxMenuItem)changeEvent.getSource();
-                    if (checkbox.isSelected()) noOfDownload = Integer.parseInt(checkbox.getText());
-                }
-            });
-            downloadThreadMenu.add(checkbox);
-            downloadThreadBG.add(checkbox);
         }
 
-        processingThreadMenu.setText("Number of Processing Threads");
-        jMenu2.add(processingThreadMenu);
-        ButtonGroup processThreadBG = new ButtonGroup();
+    );
 
-        ArrayList<JCheckBoxMenuItem> processThreadChoices = new ArrayList<JCheckBoxMenuItem>();
-        for(int i = 1; i<11; i++){
-            processThreadChoices.add(new JCheckBoxMenuItem(String.valueOf(i)));
+    addButton.setLabel("Add");
+    addButton.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            addButtonActionPerformed(evt);
         }
-        for(JCheckBoxMenuItem checkbox : processThreadChoices){
-            if (checkbox.getText().equals(String.valueOf(noOfProcess))){
-                checkbox.setSelected(true);
+    });
+
+    submitButton.setLabel("Start");
+    submitButton.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            submitButtonActionPerformed(evt);
+        }
+    });
+
+    clearBtn.setText("Clear");
+    clearBtn.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            clearBtnActionPerformed(evt);
+        }
+    });
+
+    javax.swing.GroupLayout buttonPanelLayout = new javax.swing.GroupLayout(buttonPanel);
+    buttonPanel.setLayout(buttonPanelLayout);
+    buttonPanelLayout.setHorizontalGroup(
+        buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(buttonPanelLayout.createSequentialGroup()
+            .addGap(8, 8, 8)
+            .addComponent(addButton)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(submitButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGap(6, 6, 6))
+        .addGroup(buttonPanelLayout.createSequentialGroup()
+            .addGap(35, 35, 35)
+            .addComponent(clearBtn)
+            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+    );
+    buttonPanelLayout.setVerticalGroup(
+        buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(buttonPanelLayout.createSequentialGroup()
+            .addContainerGap()
+            .addGroup(buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(submitButton)
+                .addComponent(addButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(clearBtn))
+    );
+
+    seedInput.setText("Enter Website...");
+    seedInput.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            seedInputActionPerformed(evt);
+        }
+    });
+    seedInput.addFocusListener(new java.awt.event.FocusAdapter() {
+        public void focusGained(java.awt.event.FocusEvent evt) {
+            seedInputFocusGained(evt);
+        }
+        public void focusLost(java.awt.event.FocusEvent evt) {
+            seedInputFocusLost(evt);
+        }
+    });
+
+    seedLabel.setText("Seed :");
+
+    statusLabel.setText("Status : ");
+
+    statusCode.setForeground(new java.awt.Color(0, 255, 0));
+    statusCode.setText("Ready!");
+
+    javax.swing.GroupLayout seedPanelLayout = new javax.swing.GroupLayout(seedPanel);
+    seedPanel.setLayout(seedPanelLayout);
+    seedPanelLayout.setHorizontalGroup(
+        seedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, seedPanelLayout.createSequentialGroup()
+            .addGroup(seedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addComponent(statusLabel)
+                .addComponent(seedLabel))
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+            .addGroup(seedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(seedInput, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(statusCode))
+            .addGap(8, 8, 8))
+    );
+    seedPanelLayout.setVerticalGroup(
+        seedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(seedPanelLayout.createSequentialGroup()
+            .addContainerGap()
+            .addGroup(seedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(seedInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(seedLabel))
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
+            .addGroup(seedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(statusLabel)
+                .addComponent(statusCode)))
+    );
+
+    jMenu1.setText("File");
+
+    closeBtn.setText("Close");
+    closeBtn.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            closeBtnActionPerformed(evt);
+        }
+    });
+    jMenu1.add(closeBtn);
+
+    jMenuBar1.add(jMenu1);
+
+    jMenu2.setText("Edit");
+
+    jMenuItem1.setText("Set Number of Websites to Crawl");
+    jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            jMenuItem1ActionPerformed(evt);
+        }
+    });
+    jMenu2.add(jMenuItem1);
+
+    downloadThreadMenu.setText("Number of Download Threads");
+    jMenu2.add(downloadThreadMenu);
+    downloadThreadBG = new ButtonGroup();
+    ArrayList<JCheckBoxMenuItem> downloadThreadChoices = new ArrayList<JCheckBoxMenuItem>();
+    for(int i = 1; i<11; i++){
+        downloadThreadChoices.add(new JCheckBoxMenuItem(String.valueOf(i)));
+    }
+    for(JCheckBoxMenuItem checkbox : downloadThreadChoices){
+        if (checkbox.getText().equals(String.valueOf(noOfDownload))){
+            checkbox.setSelected(true);
+        }
+        checkbox.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent changeEvent){
+                JCheckBoxMenuItem checkbox = (JCheckBoxMenuItem)changeEvent.getSource();
+                if (checkbox.isSelected()) noOfDownload = Integer.parseInt(checkbox.getText());
             }
-            checkbox.addChangeListener(new ChangeListener() {
-                public void stateChanged(ChangeEvent changeEvent){
-                    JCheckBoxMenuItem checkbox = (JCheckBoxMenuItem)changeEvent.getSource();
-                    if (checkbox.isSelected()) noOfProcess = Integer.parseInt(checkbox.getText());
-                }
-            });
-            processingThreadMenu.add(checkbox);
-            processThreadBG.add(checkbox);
+        });
+        downloadThreadMenu.add(checkbox);
+        downloadThreadBG.add(checkbox);
+    }
+
+    processingThreadMenu.setText("Number of Processing Threads");
+    jMenu2.add(processingThreadMenu);
+    ButtonGroup processThreadBG = new ButtonGroup();
+
+    ArrayList<JCheckBoxMenuItem> processThreadChoices = new ArrayList<JCheckBoxMenuItem>();
+    for(int i = 1; i<11; i++){
+        processThreadChoices.add(new JCheckBoxMenuItem(String.valueOf(i)));
+    }
+    for(JCheckBoxMenuItem checkbox : processThreadChoices){
+        if (checkbox.getText().equals(String.valueOf(noOfProcess))){
+            checkbox.setSelected(true);
         }
+        checkbox.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent changeEvent){
+                JCheckBoxMenuItem checkbox = (JCheckBoxMenuItem)changeEvent.getSource();
+                if (checkbox.isSelected()) noOfProcess = Integer.parseInt(checkbox.getText());
+            }
+        });
+        processingThreadMenu.add(checkbox);
+        processThreadBG.add(checkbox);
+    }
 
-        jMenuBar1.add(jMenu2);
+    jMenuBar1.add(jMenu2);
 
-        setJMenuBar(jMenuBar1);
+    setJMenuBar(jMenuBar1);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(16, 16, 16)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(pageScrollPane)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(seedPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(pageScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(seedPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(6, 6, 6))
-        );
+    javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+    getContentPane().setLayout(layout);
+    layout.setHorizontalGroup(
+        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(layout.createSequentialGroup()
+            .addGap(16, 16, 16)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                .addComponent(pageScrollPane)
+                .addGroup(layout.createSequentialGroup()
+                    .addComponent(seedPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+    );
+    layout.setVerticalGroup(
+        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(layout.createSequentialGroup()
+            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(pageScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(seedPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGap(6, 6, 6))
+    );
 
-        pack();
+    pack();
     }// </editor-fold>//GEN-END:initComponents
     
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed

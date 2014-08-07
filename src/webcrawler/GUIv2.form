@@ -119,7 +119,7 @@
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem1">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Set Number of Website to Crawl"/>
+                <Property name="text" type="java.lang.String" value="Set Number of Websites to Crawl"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem1ActionPerformed"/>
@@ -218,7 +218,7 @@
                 <Column editable="false" title="No Of References" type="java.lang.Integer"/>
               </Table>
             </Property>
-            <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor" preCode="ListSelectionListener listener = new ListSelectionListener() {&#xa;@Override&#xa;    public void valueChanged(ListSelectionEvent e) {&#xa;        if (e.getSource() == pageTable.getSelectionModel() &amp;&amp; pageTable.getRowSelectionAllowed()) {&#xa;         int first = e.getFirstIndex();&#xa;         int last = e.getLastIndex();&#xa;        try{&#xa;         sourceCodeArea.setText(donePages.get(last).getContent().toString());&#xa;            DefaultListModel model = new DefaultListModel();&#xa;         for (String ref : donePages.get(last).getReferences()){&#xa;             model.addElement(ref);&#xa;         }&#xa;         referenceList.setModel(model);&#xa;        }catch(InterruptedException error){}&#xa;        jFrame1.pack();&#xa;        jFrame1.setTitle(&quot;Source Code &amp; References - &quot;+ donePages.get(last).getLink());&#xa;        jFrame1.setVisible(true);&#xa;        } else if (e.getSource() == pageTable.getColumnModel().getSelectionModel()&#xa;           &amp;&amp; pageTable.getColumnSelectionAllowed()) {&#xa;         int first = e.getFirstIndex();&#xa;         int last = e.getLastIndex();&#xa;         System.out.print(first);&#xa;         System.out.print(last);&#xa;       }&#xa;       if (e.getValueIsAdjusting()) {&#xa;         System.out.println(&quot;The mouse button has not yet been released&quot;);&#xa;       }&#xa;    }&#xa;};&#xa;pageTable.getColumnModel().getSelectionModel().addListSelectionListener(listener);&#xa;pageTable.getSelectionModel().addListSelectionListener(listener);">
+            <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor" preCode="pageTable.addMouseListener ( new MouseAdapter() {&#xa;   &#xa;&#xa;        &#xa;&#xa;        public void mouseClicked(MouseEvent e) {&#xa;            if (e.getClickCount() == 2) {&#xa;                JTable target = (JTable) e.getSource();&#xa;                int row = target.getSelectedRow();&#xa;                int column = target.getSelectedColumn();&#xa;                try {&#xa;                    sourceCodeArea.setText(donePages.get(row).getContent().toString());&#xa;                    DefaultListModel model = new DefaultListModel();&#xa;                    for (String ref : donePages.get(row).getReferences()) {&#xa;                        model.addElement(ref);&#xa;                    }&#xa;                    referenceList.setModel(model);&#xa;                } catch (InterruptedException error) {&#xa;                }&#xa;                jFrame1.pack();&#xa;                jFrame1.setTitle(&quot;Source Code &amp; References - &quot; + donePages.get(row).getLink());&#xa;                jFrame1.setVisible(true);&#xa;            }&#xa;        }&#xa;    }&#xa;&#xa;    );">
               <TableColumnModel selectionModel="0">
                 <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
                   <Title/>
@@ -248,7 +248,7 @@
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JTable(){&#xa;    public String getToolTipText(MouseEvent event){&#xa;        String tip = null;&#xa;        java.awt.Point p = event.getPoint();&#xa;        int rowIndex = rowAtPoint(p);&#xa;        int colIndex = columnAtPoint(p);&#xa;        int realColumnIndex = convertColumnIndexToModel(colIndex);&#xa;&#xa;        if(realColumnIndex == 0){&#xa;            tip = getValueAt(rowIndex, colIndex).toString();&#xa;        }else{&#xa;            tip = super.getToolTipText(event);&#xa;        }&#xa;        return tip;&#xa;    }&#xa;}"/>
-            <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="pageTable.getColumn (&quot; &quot;).setCellRenderer(new ProgressBarRender());&#xa;pageTable.setFillsViewportHeight (true);"/>
+            <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="pageTable.getColumn (&#xa;            &#xa;&#xa;    &quot; &quot;).setCellRenderer(new ProgressBarRender());&#xa;pageTable.setFillsViewportHeight (&#xa;            &#xa;&#xa;    true);"/>
           </AuxValues>
         </Component>
       </SubComponents>
