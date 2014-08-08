@@ -16,7 +16,7 @@ import static webcrawler.GUIv2.dtm;
 
 /**
  *
- * @author crimson
+ * @author Daniel, Zheng Wei
  */
 public class Downloader implements Runnable {
 
@@ -28,7 +28,7 @@ public class Downloader implements Runnable {
 
     @Override
     public void run() {
-        while (dlQueue.isWaiting() || dlQueue.hasQueued()) {
+        while ((dlQueue.isWaiting() || dlQueue.hasQueued()) && !ExecutorHandler.isInactive) {
 
             String url = dlQueue.getURL();
             if (url != null) {
@@ -58,8 +58,11 @@ public class Downloader implements Runnable {
                     rowIndex = emptyRow;
                 }
                 
-
+                ExecutorHandler.timer.resetTimer();
                 sb = PageRead.readPage(page.getLink());
+                // Since a Download might take longer than usual.
+                ExecutorHandler.timer.resetTimer();
+                
                 if (sb == null) {
                     GUIv2.dtm.setValueAt("Error", rowIndex, 2);
                     GUIv2.dtm.setValueAt(100, rowIndex, 1);
@@ -67,7 +70,7 @@ public class Downloader implements Runnable {
                 }
                 page.setContent(sb);
                 if(GUIv2.donePages.size() < (GUIv2.numberOfURLs+GUIv2.seeds.size())){
-                    GUIv2.donePages.add(page);
+                    GUIv2.donePages.add(page);                    
                     GUIv2.dtm.setValueAt("Downloaded", rowIndex, 2);
                     GUIv2.dtm.setValueAt(50, rowIndex, 1);
                     System.out.println(GUIv2.donePages.size() + " [+] Downloaded: " + page.getLink());            

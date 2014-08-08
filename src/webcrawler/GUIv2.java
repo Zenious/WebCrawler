@@ -464,7 +464,7 @@ public class GUIv2 extends javax.swing.JFrame {
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
         // TODO add your handling code here:
-        if (seedInput.getText().matches("http://(\\w+\\.)+(\\w+)")) {
+        if (seedInput.getText().matches("^(https?:\\/\\/)([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?$")) {
             if (seeds.contains(seedInput.getText())) {
                 JOptionPane.showMessageDialog(pageScrollPane, "Url already inside list!", "Duplicated url", JOptionPane.INFORMATION_MESSAGE);
             } else {

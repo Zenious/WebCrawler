@@ -17,7 +17,7 @@ import webcrawler.GUIv2;
 
 /**
  *
- * @author crimson
+ * @author Daniel, Koh Zheng Wei
  */
 public class Processor implements Runnable {
 
@@ -31,9 +31,11 @@ public class Processor implements Runnable {
 
     @Override
     public void run() {
-        while (qQueue.isWaiting() || qQueue.hasQueued()) {
+        while ((qQueue.isWaiting() || qQueue.hasQueued()) && !ExecutorHandler.isInactive) {
             Page pageToProcess = qQueue.getPage();
             if (pageToProcess != null) {
+                ExecutorHandler.timer.resetTimer();
+                
                 processingPage = pageToProcess;
                 try {
                     this.matcher = pattern.matcher(processingPage.getContent().toString());

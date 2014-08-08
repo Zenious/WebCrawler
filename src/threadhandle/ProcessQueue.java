@@ -11,7 +11,7 @@ import java.util.Queue;
 import page_utils.Page;
 /**
  *
- * @author crimson
+ * @author Daniel, Zheng Wei
  */
 public class ProcessQueue {
     private final Queue<Page> toDo = new LinkedList<>();

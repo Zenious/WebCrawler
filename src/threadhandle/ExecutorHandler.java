@@ -7,7 +7,7 @@ package threadhandle;
 
 /**
  *
- * @author crimson
+ * @author Daniel, Koh Zheng Wei
  */
 import java.awt.Color;
 import java.util.List;
@@ -26,10 +26,13 @@ public class ExecutorHandler extends Thread {
     public static ExecutorService dlExecutor;
     public static ExecutorService pExecutor;
 
-    public static List<String> toDo;
+    public static List<String> toDo;//seeds
     public static DownloadQueue dlQueue = new DownloadQueue();
     public static ProcessQueue qQueue = new ProcessQueue();
-
+    
+    public static boolean isInactive = false;
+    public static TimerThread timer = new TimerThread();
+    
     public ExecutorHandler(int d, int p, List<String> seeds) {
         this.numOfDownloadThreads = d;
         this.numOfProcessThreads = p;
@@ -64,6 +67,16 @@ public class ExecutorHandler extends Thread {
         pExecutor.shutdown();
         
         while (!dlExecutor.isTerminated() && !pExecutor.isTerminated()) {
+            System.out.println("Current Time | "+timer.getCurrentTime());
+            System.out.println("Last Active  | "+timer.getLastActive());
+            isInactive = timer.checkTimeOut();
+            if(isInactive){
+                System.out.println("Inactive for 1 minutes..."); 
+                dlQueue.setWaiting(false);
+                dlQueue.clear();
+                qQueue.setWaiting(false);
+                break;
+            }
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException ex) {

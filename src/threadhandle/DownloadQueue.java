@@ -10,7 +10,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 /**
  *
- * @author crimson
+ * @author Daniel, Zheng Wei
  */
 public class DownloadQueue{
     private final Queue<String> toDo = new LinkedList<>();
