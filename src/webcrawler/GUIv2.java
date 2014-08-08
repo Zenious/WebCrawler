@@ -8,6 +8,8 @@ package webcrawler;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Desktop;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -33,6 +35,8 @@ import javax.swing.JProgressBar;
 import javax.swing.JTable;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
@@ -60,8 +64,15 @@ public class GUIv2 extends javax.swing.JFrame {
      */
     public GUIv2() {
         initComponents();
+        centerAlign();
     }
 
+    private void centerAlign() {
+        Dimension frame = Toolkit.getDefaultToolkit().getScreenSize();
+        int x = (int) (frame.width - this.getWidth()) / 2;
+        int y = (int) (frame.height - this.getHeight()) / 2;
+        setLocation(x, y);
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -453,7 +464,7 @@ public class GUIv2 extends javax.swing.JFrame {
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
         // TODO add your handling code here:
-        if (seedInput.getText().matches("http://(\\w+\\.)+(\\w+)")) {
+        if (seedInput.getText().matches("^(https?:\\/\\/)([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?$")) {
             if (seeds.contains(seedInput.getText())) {
                 JOptionPane.showMessageDialog(pageScrollPane, "Url already inside list!", "Duplicated url", JOptionPane.INFORMATION_MESSAGE);
             } else {

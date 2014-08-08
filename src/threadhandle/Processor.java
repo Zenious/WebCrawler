@@ -6,14 +6,18 @@
 package threadhandle;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import page_utils.Page;
+import static threadhandle.ExecutorHandler.qQueue;
+import static threadhandle.ExecutorHandler.dlQueue;
 import webcrawler.GUIv2;
 
 /**
  *
- * @author crimson
+ * @author Daniel, Koh Zheng Wei
  */
 public class Processor implements Runnable {
 
@@ -23,55 +27,66 @@ public class Processor implements Runnable {
     private Page processingPage;
     public ArrayList<String> URLs = new ArrayList<>();
 
-    public Processor(Page newPage) throws InterruptedException {
-        System.out.println("\tProcessing: " + newPage.getLink());
-        this.processingPage = newPage;
-        this.matcher = pattern.matcher(processingPage.getContent().toString());
-    }
+    public Processor(){}
 
     @Override
     public void run() {
-        int rowIndex = -1;
-        for (int i = 0; i < GUIv2.dtm.getRowCount(); i++) {
-            if (processingPage.getLink().equalsIgnoreCase(
-                    (String)(GUIv2.dtm.getValueAt(i, 0)))){                       
-                GUIv2.dtm.setValueAt("Processing", i, 2);
-                rowIndex = i;
-                break;
-            }                
-        }
-        while (this.matcher.find()) {
-            String url = this.matcher.group();
-            if (!this.URLs.contains(url)) {
-                this.URLs.add(url);
-            } else {
-                continue;
-            }
-
-            boolean pageProcessed = false;
-            for (Page page : GUIv2.donePages) {
-                if (page.getLink().equalsIgnoreCase(url)) {
-                    pageProcessed = true;
-                    break;
+        while ((qQueue.isWaiting() || qQueue.hasQueued()) && !ExecutorHandler.isInactive) {
+            Page pageToProcess = qQueue.getPage();
+            if (pageToProcess != null) {
+                ExecutorHandler.timer.resetTimer();
+                
+                processingPage = pageToProcess;
+                try {
+                    this.matcher = pattern.matcher(processingPage.getContent().toString());
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Processor.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            }
-
-            if (!pageProcessed) {
-                if (ExecutorHandler.donePagesCount >= GUIv2.numberOfURLs) {
-                    ExecutorHandler.dlQueue.setWaiting(false);
-                    ExecutorHandler.dlQueue.clear();
-                } else {
-                    if (!ExecutorHandler.dlQueue.isQueued(url) && ExecutorHandler.dlQueue.isWaiting()) {
-                        System.out.println(processingPage.getLink() + " | " + url);
-                        ExecutorHandler.dlQueue.addURL(url);
+                System.out.println("\tProcessing: " + processingPage.getLink());
+                int rowIndex = -1;
+                for (int i = 0; i < GUIv2.dtm.getRowCount(); i++) {
+                    if (processingPage.getLink().equalsIgnoreCase((String) (GUIv2.dtm.getValueAt(i, 0)))) {
+                        GUIv2.dtm.setValueAt("Processing", i, 2);
+                        rowIndex = i;
+                        break;
                     }
                 }
+                while (this.matcher.find()) {
+                    String url = this.matcher.group();
+                    if (!this.URLs.contains(url)) {
+                        System.out.println(processingPage.getLink() + " | " + url);
+                        this.URLs.add(url);
+                    } else {
+                        continue;
+                    }
+
+                    boolean pageDownloaded = GUIv2.donePages.contains(new Page(url));
+
+                    if (!pageDownloaded) {
+                        if (!dlQueue.isQueued(url) && dlQueue.isWaiting()) {
+                            dlQueue.addURL(url);
+                        }
+                    }
+                    
+                    if(GUIv2.donePages.size() >= (GUIv2.numberOfURLs+GUIv2.seeds.size())){
+                        dlQueue.setWaiting(true);
+                        dlQueue.clear();
+                    }
+
+                }
+                this.processingPage.setReferences(URLs);
+                GUIv2.dtm.setValueAt(100, rowIndex, 1);
+                GUIv2.dtm.setValueAt("Processed", rowIndex, 2);
+                GUIv2.dtm.setValueAt(URLs.size(), rowIndex, 3);
+            } else {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Processor.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
-        this.processingPage.setReferences(URLs);
-        GUIv2.dtm.setValueAt(100, rowIndex, 1);
-        GUIv2.dtm.setValueAt("Processed", rowIndex, 2);
-        GUIv2.dtm.setValueAt(URLs.size(), rowIndex, 3);
+        System.out.println("Process Thread: "+Thread.currentThread().getName()+" Ended.");
     }
 
 }

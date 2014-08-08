@@ -8,6 +8,7 @@ package page_utils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  *
@@ -70,5 +71,20 @@ public class Page implements Serializable{
         this.references = references;
     }
     
+    @Override
+    public boolean equals(Object object){
+        boolean isEquals = false;
+        if(object != null && object instanceof Page){
+            isEquals = this.link.equalsIgnoreCase(((Page) object).getLink());
+        }
+        return isEquals;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 97 * hash + Objects.hashCode(this.link);
+        return hash;
+    }
     
 }
