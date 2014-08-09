@@ -224,6 +224,7 @@ public class GUIv2 extends javax.swing.JFrame {
         settingsLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         settingsLabel.setText("Settings");
 
+        dlThreadLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         dlThreadLabel.setText("No. of Download Thread(s):");
 
         pThreadLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -451,7 +452,7 @@ public class GUIv2 extends javax.swing.JFrame {
         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, buttonPanelLayout.createSequentialGroup()
             .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addComponent(submitButton, javax.swing.GroupLayout.DEFAULT_SIZE, 53, Short.MAX_VALUE))
+            .addComponent(submitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 53, Short.MAX_VALUE))
         .addComponent(clearBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
     );
     buttonPanelLayout.setVerticalGroup(
