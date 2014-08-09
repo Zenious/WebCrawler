@@ -72,7 +72,7 @@ public class Page implements Serializable{
     }
     
     @Override
-    public boolean equals(Object object){
+    public synchronized boolean equals(Object object){
         boolean isEquals = false;
         if(object != null && object instanceof Page){
             isEquals = this.link.equalsIgnoreCase(((Page) object).getLink());
@@ -81,7 +81,7 @@ public class Page implements Serializable{
     }
 
     @Override
-    public int hashCode() {
+    public synchronized int hashCode() {
         int hash = 7;
         hash = 97 * hash + Objects.hashCode(this.link);
         return hash;

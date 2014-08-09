@@ -51,8 +51,7 @@ public class TimerThread{
         int mins = calender.get(Calendar.MINUTE);
         int secs = calender.get(Calendar.SECOND);
         int currentTime = Integer.parseInt(String.format("%02d%02d%02d", hour, mins, secs));
-        if((currentTime-lastActiveTime)>100){
-            System.out.println("test");
+        if((currentTime-lastActiveTime)>200){
             isInactive = true;
         }
         

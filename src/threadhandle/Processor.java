@@ -80,7 +80,7 @@ public class Processor implements Runnable {
                 GUIv2.dtm.setValueAt(URLs.size(), rowIndex, 3);
             } else {
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(500);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(Processor.class.getName()).log(Level.SEVERE, null, ex);
                 }

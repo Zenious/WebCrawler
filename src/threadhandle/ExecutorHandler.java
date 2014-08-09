@@ -78,7 +78,7 @@ public class ExecutorHandler extends Thread {
                 break;
             }
             try {
-                Thread.sleep(1000);
+                Thread.sleep(500);
             } catch (InterruptedException ex) {
                 Logger.getLogger(ExecutorHandler.class.getName()).log(Level.SEVERE, null, ex);
             }

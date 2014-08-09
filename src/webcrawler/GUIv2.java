@@ -84,7 +84,7 @@ public class GUIv2 extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jFrame1 = new javax.swing.JFrame();
+        fileViewerFrame = new javax.swing.JFrame();
         sourceCodePanel = new javax.swing.JScrollPane();
         sourceCodeArea = new javax.swing.JTextArea();
         sourceCodeLabel = new javax.swing.JLabel();
@@ -92,7 +92,8 @@ public class GUIv2 extends javax.swing.JFrame {
         referenceList = new javax.swing.JList();
         referenceLabel = new javax.swing.JLabel();
         openInBrowserBtn = new javax.swing.JButton();
-        jFileChooser1 = new javax.swing.JFileChooser();
+        fileChooser = new javax.swing.JFileChooser();
+        mainPanel = new javax.swing.JPanel();
         pageScrollPane = new javax.swing.JScrollPane();
         pageTable = new javax.swing.JTable(){
             public String getToolTipText(MouseEvent event){
@@ -128,6 +129,8 @@ public class GUIv2 extends javax.swing.JFrame {
         noOfSitesMenu = new javax.swing.JMenuItem();
         downloadThreadMenu = new javax.swing.JMenu();
         processingThreadMenu = new javax.swing.JMenu();
+        settingsMenu = new javax.swing.JMenu();
+        preferenceMenuItem = new javax.swing.JMenuItem();
 
         sourceCodeArea.setEditable(false);
         sourceCodeArea.setColumns(20);
@@ -153,37 +156,37 @@ public class GUIv2 extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout jFrame1Layout = new javax.swing.GroupLayout(jFrame1.getContentPane());
-        jFrame1.getContentPane().setLayout(jFrame1Layout);
-        jFrame1Layout.setHorizontalGroup(
-            jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jFrame1Layout.createSequentialGroup()
+        javax.swing.GroupLayout fileViewerFrameLayout = new javax.swing.GroupLayout(fileViewerFrame.getContentPane());
+        fileViewerFrame.getContentPane().setLayout(fileViewerFrameLayout);
+        fileViewerFrameLayout.setHorizontalGroup(
+            fileViewerFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(fileViewerFrameLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jFrame1Layout.createSequentialGroup()
-                        .addGroup(jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(fileViewerFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(fileViewerFrameLayout.createSequentialGroup()
+                        .addGroup(fileViewerFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(sourceCodePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 342, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(sourceCodeLabel))
                         .addGap(18, 18, 18)
-                        .addGroup(jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jFrame1Layout.createSequentialGroup()
+                        .addGroup(fileViewerFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(fileViewerFrameLayout.createSequentialGroup()
                                 .addComponent(referenceLabel)
                                 .addGap(0, 74, Short.MAX_VALUE))
                             .addComponent(referencePanel)))
-                    .addGroup(jFrame1Layout.createSequentialGroup()
+                    .addGroup(fileViewerFrameLayout.createSequentialGroup()
                         .addComponent(openInBrowserBtn)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
-        jFrame1Layout.setVerticalGroup(
-            jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jFrame1Layout.createSequentialGroup()
+        fileViewerFrameLayout.setVerticalGroup(
+            fileViewerFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, fileViewerFrameLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(fileViewerFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(sourceCodeLabel)
                     .addComponent(referenceLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(fileViewerFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(referencePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 261, Short.MAX_VALUE)
                     .addComponent(sourceCodePanel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -192,11 +195,19 @@ public class GUIv2 extends javax.swing.JFrame {
         );
 
         FileFilter filter = new FileNameExtensionFilter(".crawl Files", "crawl");
-        jFileChooser1.setFileFilter(filter);
+        fileChooser.setFileFilter(filter);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("WebCrawler - Java");
+        setBackground(new java.awt.Color(254, 254, 254));
+        setForeground(java.awt.Color.white);
+        setName("mainFrame"); // NOI18N
 
+        mainPanel.setBackground(new java.awt.Color(254, 254, 254));
+
+        pageScrollPane.setFont(new java.awt.Font("DejaVu Sans", 0, 13)); // NOI18N
+
+        pageTable.setFont(new java.awt.Font("DejaVu Sans", 0, 13)); // NOI18N
         pageTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -243,15 +254,18 @@ public class GUIv2 extends javax.swing.JFrame {
                         referenceList.setModel(model);
                     } catch (InterruptedException error) {
                     }
-                    jFrame1.pack();
-                    jFrame1.setTitle("Source Code & References - " + donePages.get(row).getLink());
-                    jFrame1.setVisible(true);
+                    fileViewerFrame.pack();
+                    fileViewerFrame.setTitle("Source Code & References - " + donePages.get(row).getLink());
+                    fileViewerFrame.setVisible(true);
                 }
             }
         }
 
     );
 
+    buttonPanel.setBackground(new java.awt.Color(254, 254, 254));
+
+    addButton.setFont(new java.awt.Font("DejaVu Sans", 0, 13)); // NOI18N
     addButton.setLabel("Add");
     addButton.addActionListener(new java.awt.event.ActionListener() {
         public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -259,6 +273,7 @@ public class GUIv2 extends javax.swing.JFrame {
         }
     });
 
+    submitButton.setFont(new java.awt.Font("DejaVu Sans", 0, 13)); // NOI18N
     submitButton.setLabel("Start");
     submitButton.addActionListener(new java.awt.event.ActionListener() {
         public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -266,6 +281,7 @@ public class GUIv2 extends javax.swing.JFrame {
         }
     });
 
+    clearBtn.setFont(new java.awt.Font("DejaVu Sans", 0, 13)); // NOI18N
     clearBtn.setText("Clear");
     clearBtn.addActionListener(new java.awt.event.ActionListener() {
         public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -277,28 +293,26 @@ public class GUIv2 extends javax.swing.JFrame {
     buttonPanel.setLayout(buttonPanelLayout);
     buttonPanelLayout.setHorizontalGroup(
         buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-        .addGroup(buttonPanelLayout.createSequentialGroup()
-            .addGap(8, 8, 8)
-            .addComponent(addButton)
+        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, buttonPanelLayout.createSequentialGroup()
+            .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addComponent(submitButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGap(6, 6, 6))
-        .addGroup(buttonPanelLayout.createSequentialGroup()
-            .addGap(35, 35, 35)
-            .addComponent(clearBtn)
-            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(submitButton, javax.swing.GroupLayout.DEFAULT_SIZE, 53, Short.MAX_VALUE))
+        .addComponent(clearBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
     );
     buttonPanelLayout.setVerticalGroup(
         buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
         .addGroup(buttonPanelLayout.createSequentialGroup()
-            .addContainerGap()
+            .addGap(11, 11, 11)
             .addGroup(buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(submitButton)
                 .addComponent(addButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addGap(12, 12, 12)
             .addComponent(clearBtn))
     );
 
+    seedPanel.setBackground(new java.awt.Color(254, 254, 254));
+
+    seedInput.setFont(new java.awt.Font("DejaVu Sans", 0, 13)); // NOI18N
     seedInput.setText("Enter Website...");
     seedInput.addActionListener(new java.awt.event.ActionListener() {
         public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -314,10 +328,13 @@ public class GUIv2 extends javax.swing.JFrame {
         }
     });
 
+    seedLabel.setFont(new java.awt.Font("DejaVu Sans", 0, 13)); // NOI18N
     seedLabel.setText("Seed :");
 
-    statusLabel.setText("Status : ");
+    statusLabel.setFont(new java.awt.Font("DejaVu Sans", 0, 13)); // NOI18N
+    statusLabel.setText("Status :");
 
+    statusCode.setFont(new java.awt.Font("DejaVu Sans", 0, 13)); // NOI18N
     statusCode.setForeground(new java.awt.Color(0, 255, 0));
     statusCode.setText("Ready!");
 
@@ -330,25 +347,54 @@ public class GUIv2 extends javax.swing.JFrame {
                 .addComponent(statusLabel)
                 .addComponent(seedLabel))
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-            .addGroup(seedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(seedInput, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(statusCode))
+            .addGroup(seedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addComponent(seedInput, javax.swing.GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE)
+                .addComponent(statusCode, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGap(8, 8, 8))
     );
     seedPanelLayout.setVerticalGroup(
         seedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
         .addGroup(seedPanelLayout.createSequentialGroup()
-            .addContainerGap()
+            .addGap(11, 11, 11)
             .addGroup(seedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                 .addComponent(seedInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addComponent(seedLabel))
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
             .addGroup(seedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                 .addComponent(statusLabel)
                 .addComponent(statusCode)))
     );
 
+    javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
+    mainPanel.setLayout(mainPanelLayout);
+    mainPanelLayout.setHorizontalGroup(
+        mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(mainPanelLayout.createSequentialGroup()
+            .addGap(21, 21, 21)
+            .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                .addComponent(pageScrollPane)
+                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, mainPanelLayout.createSequentialGroup()
+                    .addComponent(seedPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+            .addContainerGap(21, Short.MAX_VALUE))
+    );
+    mainPanelLayout.setVerticalGroup(
+        mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(mainPanelLayout.createSequentialGroup()
+            .addGap(21, 21, 21)
+            .addComponent(pageScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
+            .addGap(10, 10, 10)
+            .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(seedPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGap(21, 21, 21))
+    );
+
+    menuBar.setFont(new java.awt.Font("DejaVu Sans", 0, 13)); // NOI18N
+
     fileMenu.setText("File");
+    fileMenu.setFont(new java.awt.Font("DejaVu Sans", 0, 13)); // NOI18N
 
     openMenu.setText("Open");
     openMenu.addActionListener(new java.awt.event.ActionListener() {
@@ -377,6 +423,7 @@ public class GUIv2 extends javax.swing.JFrame {
     menuBar.add(fileMenu);
 
     editMenu.setText("Edit");
+    editMenu.setFont(new java.awt.Font("DejaVu Sans", 0, 13)); // NOI18N
 
     noOfSitesMenu.setText("Set Number of Websites to Crawl");
     noOfSitesMenu.addActionListener(new java.awt.event.ActionListener() {
@@ -431,32 +478,29 @@ public class GUIv2 extends javax.swing.JFrame {
 
     menuBar.add(editMenu);
 
+    settingsMenu.setText("Settings");
+
+    preferenceMenuItem.setText("Preference");
+    preferenceMenuItem.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            preferenceMenuItemActionPerformed(evt);
+        }
+    });
+    settingsMenu.add(preferenceMenuItem);
+
+    menuBar.add(settingsMenu);
+
     setJMenuBar(menuBar);
 
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
     getContentPane().setLayout(layout);
     layout.setHorizontalGroup(
         layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-        .addGroup(layout.createSequentialGroup()
-            .addGap(16, 16, 16)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                .addComponent(pageScrollPane)
-                .addGroup(layout.createSequentialGroup()
-                    .addComponent(seedPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
     );
     layout.setVerticalGroup(
         layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-        .addGroup(layout.createSequentialGroup()
-            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(pageScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(seedPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGap(6, 6, 6))
+        .addComponent(mainPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
     );
 
     pack();
@@ -555,8 +599,8 @@ public class GUIv2 extends javax.swing.JFrame {
         // TODO add your handling code here:
         if (Desktop.isDesktopSupported()) {
             try {
-                int hyperlinkIndex = jFrame1.getTitle().lastIndexOf(" ");
-                Desktop.getDesktop().browse(new URI(jFrame1.getTitle().substring(hyperlinkIndex + 1)));
+                int hyperlinkIndex = fileViewerFrame.getTitle().lastIndexOf(" ");
+                Desktop.getDesktop().browse(new URI(fileViewerFrame.getTitle().substring(hyperlinkIndex + 1)));
             } catch (URISyntaxException ex) {
                 Logger.getLogger(GUIv2.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
@@ -567,9 +611,9 @@ public class GUIv2 extends javax.swing.JFrame {
 
     private void openMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openMenuActionPerformed
         // TODO add your handling code here:
-        int returnVal = jFileChooser1.showOpenDialog(openMenu);
+        int returnVal = fileChooser.showOpenDialog(openMenu);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-            File file = jFileChooser1.getSelectedFile();
+            File file = fileChooser.getSelectedFile();
             if (file.isFile()) {
                 FileInputStream fis = null;
                 try {
@@ -606,11 +650,11 @@ public class GUIv2 extends javax.swing.JFrame {
 
     private void saveMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveMenuActionPerformed
         // TODO add your handling code here:
-        int returnVal = jFileChooser1.showDialog(openMenu, "Save");
+        int returnVal = fileChooser.showDialog(openMenu, "Save");
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             FileOutputStream fos = null;
             try {
-                File file = jFileChooser1.getSelectedFile();
+                File file = fileChooser.getSelectedFile();
                 System.out.println("File selected : " + file.getName());
                 fos = new FileOutputStream(file + ".crawl");
                 try (ObjectOutputStream oos = new ObjectOutputStream(fos)) {
@@ -630,6 +674,11 @@ public class GUIv2 extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_saveMenuActionPerformed
 
+    private void preferenceMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_preferenceMenuItemActionPerformed
+        // TODO add your handling code here:
+        System.out.println("test");
+    }//GEN-LAST:event_preferenceMenuItemActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -639,20 +688,19 @@ public class GUIv2 extends javax.swing.JFrame {
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
+        String os = System.getProperty("os.name");
+        String theme = "Nimbus";
+        if(os.startsWith("Linux")){
+            theme = "GTK+";
+        }
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Windows".equals(info.getName())) {
+                if (theme.equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(GUIv2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(GUIv2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(GUIv2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(GUIv2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
@@ -692,15 +740,41 @@ public class GUIv2 extends javax.swing.JFrame {
     private javax.swing.JMenu downloadThreadMenu;
     private javax.swing.ButtonGroup downloadThreadBG;
     private javax.swing.JMenu editMenu;
+    private javax.swing.JFileChooser fileChooser;
     private javax.swing.JMenu fileMenu;
-    private javax.swing.JFileChooser jFileChooser1;
-    private javax.swing.JFrame jFrame1;
+    private javax.swing.JFrame fileViewerFrame;
+    private javax.swing.JPanel mainPanel;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem noOfSitesMenu;
+    private javax.swing.JLabel numDLThreadLabel;
+    private javax.swing.JLabel numDLThreadLabel1;
+    private javax.swing.JLabel numDLThreadLabel2;
+    private javax.swing.JLabel numDLThreadLabel3;
+    private javax.swing.JLabel numPThreadsLabel;
+    private javax.swing.JLabel numPThreadsLabel1;
+    private javax.swing.JLabel numPThreadsLabel2;
+    private javax.swing.JLabel numPThreadsLabel3;
+    private javax.swing.JTextField numPagesInputField;
+    private javax.swing.JTextField numPagesInputField1;
+    private javax.swing.JTextField numPagesInputField2;
+    private javax.swing.JTextField numPagesInputField3;
+    private javax.swing.JLabel numPagesLabel;
+    private javax.swing.JLabel numPagesLabel1;
+    private javax.swing.JLabel numPagesLabel2;
+    private javax.swing.JLabel numPagesLabel3;
     private javax.swing.JButton openInBrowserBtn;
     private javax.swing.JMenuItem openMenu;
     private javax.swing.JScrollPane pageScrollPane;
     private javax.swing.JTable pageTable;
+    private javax.swing.JDialog preferenceDialog;
+    private javax.swing.JDialog preferenceDialog1;
+    private javax.swing.JDialog preferenceDialog2;
+    private javax.swing.JDialog preferenceDialog3;
+    private javax.swing.JMenuItem preferenceMenuItem;
+    private javax.swing.JPanel preferencePanel;
+    private javax.swing.JPanel preferencePanel1;
+    private javax.swing.JPanel preferencePanel2;
+    private javax.swing.JPanel preferencePanel3;
     private javax.swing.JMenu processingThreadMenu;
     private javax.swing.JLabel referenceLabel;
     private javax.swing.JList referenceList;
@@ -709,6 +783,11 @@ public class GUIv2 extends javax.swing.JFrame {
     private javax.swing.JTextField seedInput;
     private javax.swing.JLabel seedLabel;
     private javax.swing.JPanel seedPanel;
+    private javax.swing.JLabel settingsLabel;
+    private javax.swing.JLabel settingsLabel1;
+    private javax.swing.JLabel settingsLabel2;
+    private javax.swing.JLabel settingsLabel3;
+    private javax.swing.JMenu settingsMenu;
     private javax.swing.JTextArea sourceCodeArea;
     private javax.swing.JLabel sourceCodeLabel;
     private javax.swing.JScrollPane sourceCodePanel;
