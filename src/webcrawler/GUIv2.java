@@ -824,7 +824,7 @@ public class GUIv2 extends javax.swing.JFrame {
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
         String os = System.getProperty("os.name");
-        String theme = "Nimbus";
+        String theme = "Windows";
         if (os.startsWith("Linux")) {
             theme = "GTK+";
         }

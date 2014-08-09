@@ -93,7 +93,10 @@ public class ExecutorHandler extends Thread {
         int count = 1;
         for(Map.Entry<String,Page> entry: GUIv2.donePagesHashMap.entrySet()){
             System.out.println(count + " | " + entry.getValue().getLink() + " | " + entry.getValue().getReferences().size());
+            count++;    
         }
+        dlQueue.clear();
+        qQueue.clear();
     }
 }
 
