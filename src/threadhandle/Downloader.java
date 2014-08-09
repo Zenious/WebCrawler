@@ -33,7 +33,7 @@ public class Downloader implements Runnable {
             String url = dlQueue.getURL();
             if (url != null) {
                 Page newPage = new Page(url);
-                if (GUIv2.donePages.contains(newPage)) {
+                if (GUIv2.donePagesHashMap.containsKey(url)) {
                     System.out.println(newPage.getLink() + " | has already been processed");
                     continue;
                 }
@@ -64,32 +64,31 @@ public class Downloader implements Runnable {
                 ExecutorHandler.timer.resetTimer();
                 
                 if (sb == null) {
-                    GUIv2.dtm.setValueAt("Error", rowIndex, 2);
-                    GUIv2.dtm.setValueAt(110, rowIndex, 1);
+                    GUIv2.dtm.setValueAt("ERROR OCCURED", rowIndex, 2);
+                    GUIv2.dtm.setValueAt(100, rowIndex, 1);
+                    GUIv2.dtm.setValueAt("~nil~", rowIndex, 3);
                     continue;
                 }
                 page.setContent(sb);
-    synchronized(this){
-                if(GUIv2.donePages.size() < (GUIv2.numberOfURLs+GUIv2.seeds.size())){
-                    GUIv2.donePages.add(page);
-                    GUIv2.realIndex.put(rowIndex, GUIv2.donePages.size()-1);
+                if(GUIv2.donePagesHashMap.size() < (GUIv2.numberOfURLs+GUIv2.seeds.size())){
+                    GUIv2.donePagesHashMap.put(page.getLink(), page);                            
                     GUIv2.dtm.setValueAt("Downloaded", rowIndex, 2);
                     GUIv2.dtm.setValueAt(50, rowIndex, 1);
-                    System.out.println(GUIv2.donePages.size() + " [+] Downloaded: " + page.getLink());            
+                    System.out.println(GUIv2.donePagesHashMap.size() + " [+] Downloaded: " + page.getLink());            
                 }
-    }
+    
                 if(qQueue.isWaiting()){
                     ExecutorHandler.qQueue.addPage(page);
                     System.out.println("Page added to ProcessQueue: " + page.getLink());
                 }
                 
-                if(GUIv2.donePages.size() >= (GUIv2.numberOfURLs+GUIv2.seeds.size()) ){
+                if(GUIv2.donePagesHashMap.size() >= (GUIv2.numberOfURLs+GUIv2.seeds.size()) ){
                     qQueue.setWaiting(false);
                 }
                 
             }else{
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(500);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(Downloader.class.getName()).log(Level.SEVERE, null, ex);
                 }
