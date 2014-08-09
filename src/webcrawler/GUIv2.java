@@ -378,9 +378,8 @@ public class GUIv2 extends javax.swing.JFrame {
             true);
         pageScrollPane.setViewportView(pageTable);
         pageTable.addMouseListener ( new MouseAdapter() {
-
             public void mouseClicked(MouseEvent e) {
-                Page toView;
+                Page toView = null;
                 if (e.getClickCount() == 2) {
                     JTable target = (JTable) e.getSource();
                     int row = target.getSelectedRow();
@@ -396,7 +395,7 @@ public class GUIv2 extends javax.swing.JFrame {
                             model.addElement(ref);
                         }
                         referenceList.setModel(model);
-                    } catch (InterruptedException error) {
+                    } catch (InterruptedException|NullPointerException error) {
                         toView = null;
                     }
                     if(toView == null){
@@ -406,7 +405,6 @@ public class GUIv2 extends javax.swing.JFrame {
                             "Page Error",
                             JOptionPane.ERROR_MESSAGE);
                     }else{
-
                         fileViewerFrame.pack();
                         fileViewerFrame.setTitle("Source Code & References - " + toView.getLink());
                         fileViewerFrame.setLocationRelativeTo(GUIv2.this);
