@@ -21,7 +21,7 @@ import webcrawler.GUIv2;
  */
 public class Processor implements Runnable {
 
-    private final String regexp = "http://(\\w+\\.)+(\\w+)";
+    private final String regexp = "(https?:\\/\\/)([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?";
     private final Pattern pattern = Pattern.compile(regexp);
     private Matcher matcher;
     private Page processingPage;
@@ -38,7 +38,7 @@ public class Processor implements Runnable {
                 
                 processingPage = pageToProcess;
                 try {
-                    this.matcher = pattern.matcher(processingPage.getContent().toString());
+                    this.matcher = pattern.matcher(processingPage.getContent().toString().toLowerCase());
                 } catch (InterruptedException ex) {
                     Logger.getLogger(Processor.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -78,6 +78,7 @@ public class Processor implements Runnable {
                 GUIv2.dtm.setValueAt(100, rowIndex, 1);
                 GUIv2.dtm.setValueAt("Processed", rowIndex, 2);
                 GUIv2.dtm.setValueAt(URLs.size(), rowIndex, 3);
+                                
             } else {
                 try {
                     Thread.sleep(1000);

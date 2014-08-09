@@ -65,17 +65,19 @@ public class Downloader implements Runnable {
                 
                 if (sb == null) {
                     GUIv2.dtm.setValueAt("Error", rowIndex, 2);
-                    GUIv2.dtm.setValueAt(100, rowIndex, 1);
+                    GUIv2.dtm.setValueAt(110, rowIndex, 1);
                     continue;
                 }
                 page.setContent(sb);
+    synchronized(this){
                 if(GUIv2.donePages.size() < (GUIv2.numberOfURLs+GUIv2.seeds.size())){
-                    GUIv2.donePages.add(page);                    
+                    GUIv2.donePages.add(page);
+                    GUIv2.realIndex.put(rowIndex, GUIv2.donePages.size()-1);
                     GUIv2.dtm.setValueAt("Downloaded", rowIndex, 2);
                     GUIv2.dtm.setValueAt(50, rowIndex, 1);
                     System.out.println(GUIv2.donePages.size() + " [+] Downloaded: " + page.getLink());            
                 }
-                
+    }
                 if(qQueue.isWaiting()){
                     ExecutorHandler.qQueue.addPage(page);
                     System.out.println("Page added to ProcessQueue: " + page.getLink());

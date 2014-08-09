@@ -23,6 +23,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -58,6 +59,7 @@ public class GUIv2 extends javax.swing.JFrame {
     public static DefaultTableModel dtm;
     private int noOfDownload = 5;
     private int noOfProcess = 5;
+    public static HashMap<Integer, Integer> realIndex;
 
     /**
      * Creates new form GUIv2
@@ -234,18 +236,26 @@ public class GUIv2 extends javax.swing.JFrame {
                     JTable target = (JTable) e.getSource();
                     int row = target.getSelectedRow();
                     int column = target.getSelectedColumn();
-                    try {
-                        sourceCodeArea.setText(donePages.get(row).getContent().toString());
-                        DefaultListModel model = new DefaultListModel();
-                        for (String ref : donePages.get(row).getReferences()) {
-                            model.addElement(ref);
-                        }
-                        referenceList.setModel(model);
-                    } catch (InterruptedException error) {
+                    int realRow = -1;
+                    if (realIndex.containsKey(row)){
+                        realRow = realIndex.get(row);
                     }
-                    jFrame1.pack();
-                    jFrame1.setTitle("Source Code & References - " + donePages.get(row).getLink());
-                    jFrame1.setVisible(true);
+                    System.out.println("[*] RealIndex - "+realRow);
+                    System.out.println("[*] CurrentIndex - "+row);
+                    if (realRow >-1){
+                        try {
+                            sourceCodeArea.setText(donePages.get(realRow).getContent().toString());
+                            DefaultListModel model = new DefaultListModel();
+                            for (String ref : donePages.get(realRow).getReferences()) {
+                                model.addElement(ref);
+                            }
+                            referenceList.setModel(model);
+                        } catch (InterruptedException error) {
+                        }
+                        jFrame1.pack();
+                        jFrame1.setTitle("Source Code & References - " + donePages.get(realRow).getLink());
+                        jFrame1.setVisible(true);
+                    }
                 }
             }
         }
@@ -464,7 +474,7 @@ public class GUIv2 extends javax.swing.JFrame {
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
         // TODO add your handling code here:
-        if (seedInput.getText().matches("^(https?:\\/\\/)([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?$")) {
+        if (seedInput.getText().toLowerCase().matches("^(https?:\\/\\/)([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?$")) {
             if (seeds.contains(seedInput.getText())) {
                 JOptionPane.showMessageDialog(pageScrollPane, "Url already inside list!", "Duplicated url", JOptionPane.INFORMATION_MESSAGE);
             } else {
@@ -496,6 +506,7 @@ public class GUIv2 extends javax.swing.JFrame {
         ex.start();
         statusCode.setText("Crawling...");
         statusCode.setForeground(Color.red);
+        realIndex = new HashMap<>();
         //DefaultTableModel dtm = (DefaultTableModel) jTable1.getModel();
         //  for (int i = 0; i < dtm.getRowCount(); i++) {
         //    if(dtm.getValueAt(i, 2).toString().equals("Queued")){
@@ -530,6 +541,7 @@ public class GUIv2 extends javax.swing.JFrame {
         seeds.clear();
         donePages.clear();
         dtm.setRowCount(0);
+        emptyRow = 0;
     }//GEN-LAST:event_clearBtnActionPerformed
 
     private void noOfSitesMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_noOfSitesMenuActionPerformed
@@ -590,12 +602,15 @@ public class GUIv2 extends javax.swing.JFrame {
                     }
                 }
             }
+            realIndex = new HashMap<>();
+            dtm = (DefaultTableModel) pageTable.getModel();
+            dtm.setRowCount(0);
             for (Page page : donePages) {
-                dtm = (DefaultTableModel) pageTable.getModel();
                 dtm.addRow(new Object[][]{null, null, null, null});
                 while (dtm.getValueAt(emptyRow, 0) != null) {
                     emptyRow++;
                 }
+                realIndex.put(emptyRow, emptyRow);
                 dtm.setValueAt(page.getLink(), emptyRow, 0);
                 dtm.setValueAt(100, emptyRow, 1);
                 dtm.setValueAt("Downloaded", emptyRow, 2);
@@ -630,7 +645,11 @@ public class GUIv2 extends javax.swing.JFrame {
             try {
                 File file = jFileChooser1.getSelectedFile();
                 System.out.println("File selected : " + file.getName());
-                fos = new FileOutputStream(file + ".crawl");
+                if (file.getName().endsWith(".crawl")){
+                    fos = new FileOutputStream(file);
+                }else{
+                    fos = new FileOutputStream(file + ".crawl");
+                }
                 try (ObjectOutputStream oos = new ObjectOutputStream(fos)) {
                     oos.writeObject(donePages);
                 }
@@ -688,16 +707,21 @@ public class GUIv2 extends javax.swing.JFrame {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             int progress = 0;
+            setStringPainted(true);
             if (value instanceof Float) {
                 progress = Math.round((float) value / 100);
                 setValue(progress);
             } else if (value instanceof Integer) {
                 progress = (int) value;
+                if (progress >100){
+                    this.setForeground(Color.red);
+                }else{
+                    this.setForeground(Color.BLUE);
+                }
                 setValue(progress);
             } else if (value instanceof String) {
                 setString((String) value);
             }
-            setStringPainted(true);
             return this;
         }
     }
