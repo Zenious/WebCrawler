@@ -23,7 +23,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ButtonGroup;
@@ -53,7 +55,8 @@ public class GUIv2 extends javax.swing.JFrame {
     private int emptyRow = 0;
     public static List<String> seeds = Collections.synchronizedList(new ArrayList<String>());
     public static ExecutorHandler ex;
-    public static List<Page> donePages = Collections.synchronizedList(new ArrayList<Page>());
+    //public static List<Page> donePages = Collections.synchronizedList(new ArrayList<Page>());
+    public static HashMap<String, Page> donePagesHashMap = new HashMap<>();
     public static int numberOfURLs = 15;
     public static DefaultTableModel dtm;
     private int noOfDownload = 5;
@@ -73,6 +76,13 @@ public class GUIv2 extends javax.swing.JFrame {
         int y = (int) (frame.height - this.getHeight()) / 2;
         setLocation(x, y);
     }
+
+    private void resetSettings() {
+        dlSlider.setValue(noOfDownload);
+        pSlider.setValue(noOfProcess);
+        pagesInput.setText(String.valueOf(numberOfURLs));
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -93,6 +103,18 @@ public class GUIv2 extends javax.swing.JFrame {
         referenceLabel = new javax.swing.JLabel();
         openInBrowserBtn = new javax.swing.JButton();
         fileChooser = new javax.swing.JFileChooser();
+        preferenceDialog = new javax.swing.JDialog();
+        preferencePanel = new javax.swing.JPanel();
+        settingsLabel = new javax.swing.JLabel();
+        dlThreadLabel = new javax.swing.JLabel();
+        pThreadLabel = new javax.swing.JLabel();
+        dlSlider = new javax.swing.JSlider();
+        pSlider = new javax.swing.JSlider();
+        pThreadLabel1 = new javax.swing.JLabel();
+        pagesInput = new javax.swing.JTextField();
+        settingsButtonPanel = new javax.swing.JPanel();
+        saveSettingsBtn = new javax.swing.JButton();
+        cancelSettingsButton = new javax.swing.JButton();
         mainPanel = new javax.swing.JPanel();
         pageScrollPane = new javax.swing.JScrollPane();
         pageTable = new javax.swing.JTable(){
@@ -125,10 +147,6 @@ public class GUIv2 extends javax.swing.JFrame {
         openMenu = new javax.swing.JMenuItem();
         saveMenu = new javax.swing.JMenuItem();
         closeMenu = new javax.swing.JMenuItem();
-        editMenu = new javax.swing.JMenu();
-        noOfSitesMenu = new javax.swing.JMenuItem();
-        downloadThreadMenu = new javax.swing.JMenu();
-        processingThreadMenu = new javax.swing.JMenu();
         settingsMenu = new javax.swing.JMenu();
         preferenceMenuItem = new javax.swing.JMenuItem();
 
@@ -197,6 +215,124 @@ public class GUIv2 extends javax.swing.JFrame {
         FileFilter filter = new FileNameExtensionFilter(".crawl Files", "crawl");
         fileChooser.setFileFilter(filter);
 
+        preferenceDialog.setTitle("Settings - Preferences");
+
+        preferencePanel.setBackground(new java.awt.Color(254, 254, 254));
+
+        settingsLabel.setFont(new java.awt.Font("DejaVu Sans", 0, 15)); // NOI18N
+        settingsLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        settingsLabel.setText("Settings");
+
+        dlThreadLabel.setText("No. of Download Thread(s):");
+
+        pThreadLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        pThreadLabel.setText("No. of Process Thread(s):");
+
+        dlSlider.setMaximum(20);
+        dlSlider.setValue(5);
+
+        pSlider.setMaximum(20);
+        pSlider.setValue(5);
+
+        pThreadLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        pThreadLabel1.setText("No. of Page(s) to Crawl:");
+
+        pagesInput.setText("15");
+
+        javax.swing.GroupLayout preferencePanelLayout = new javax.swing.GroupLayout(preferencePanel);
+        preferencePanel.setLayout(preferencePanelLayout);
+        preferencePanelLayout.setHorizontalGroup(
+            preferencePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(preferencePanelLayout.createSequentialGroup()
+                .addGap(16, 16, 16)
+                .addComponent(settingsLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(16, 16, 16))
+            .addGroup(preferencePanelLayout.createSequentialGroup()
+                .addGap(55, 55, 55)
+                .addGroup(preferencePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(pThreadLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(preferencePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(dlThreadLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(pThreadLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18)
+                .addGroup(preferencePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(pSlider, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(dlSlider, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(pagesInput, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(63, Short.MAX_VALUE))
+        );
+        preferencePanelLayout.setVerticalGroup(
+            preferencePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(preferencePanelLayout.createSequentialGroup()
+                .addGap(16, 16, 16)
+                .addComponent(settingsLabel)
+                .addGap(18, 18, 18)
+                .addGroup(preferencePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(dlSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(dlThreadLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(45, 45, 45)
+                .addGroup(preferencePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(pSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(pThreadLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(34, 34, 34)
+                .addGroup(preferencePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(pagesInput)
+                    .addComponent(pThreadLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(45, Short.MAX_VALUE))
+        );
+
+        settingsButtonPanel.setBackground(new java.awt.Color(254, 254, 254));
+
+        saveSettingsBtn.setText("Save");
+        saveSettingsBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                saveSettingsBtnMouseClicked(evt);
+            }
+        });
+
+        cancelSettingsButton.setText("Cancel");
+        cancelSettingsButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                cancelSettingsButtonMouseClicked(evt);
+            }
+        });
+
+        javax.swing.GroupLayout settingsButtonPanelLayout = new javax.swing.GroupLayout(settingsButtonPanel);
+        settingsButtonPanel.setLayout(settingsButtonPanelLayout);
+        settingsButtonPanelLayout.setHorizontalGroup(
+            settingsButtonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(settingsButtonPanelLayout.createSequentialGroup()
+                .addGap(144, 144, 144)
+                .addComponent(saveSettingsBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(43, 43, 43)
+                .addComponent(cancelSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        settingsButtonPanelLayout.setVerticalGroup(
+            settingsButtonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(settingsButtonPanelLayout.createSequentialGroup()
+                .addGap(36, 36, 36)
+                .addGroup(settingsButtonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(saveSettingsBtn)
+                    .addComponent(cancelSettingsButton))
+                .addContainerGap(38, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout preferenceDialogLayout = new javax.swing.GroupLayout(preferenceDialog.getContentPane());
+        preferenceDialog.getContentPane().setLayout(preferenceDialogLayout);
+        preferenceDialogLayout.setHorizontalGroup(
+            preferenceDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(preferencePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(settingsButtonPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        preferenceDialogLayout.setVerticalGroup(
+            preferenceDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(preferenceDialogLayout.createSequentialGroup()
+                .addComponent(preferencePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(settingsButtonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("WebCrawler - Java");
         setBackground(new java.awt.Color(254, 254, 254));
@@ -241,22 +377,38 @@ public class GUIv2 extends javax.swing.JFrame {
         pageTable.addMouseListener ( new MouseAdapter() {
 
             public void mouseClicked(MouseEvent e) {
+                Page toView;
                 if (e.getClickCount() == 2) {
                     JTable target = (JTable) e.getSource();
                     int row = target.getSelectedRow();
                     int column = target.getSelectedColumn();
+                    String url = target.getValueAt(row, column).toString();
+                    System.out.println(url.toString());
+
                     try {
-                        sourceCodeArea.setText(donePages.get(row).getContent().toString());
+                        toView = donePagesHashMap.get(url);
+                        sourceCodeArea.setText(toView.getContent().toString());
                         DefaultListModel model = new DefaultListModel();
-                        for (String ref : donePages.get(row).getReferences()) {
+                        for (String ref : toView.getReferences()) {
                             model.addElement(ref);
                         }
                         referenceList.setModel(model);
                     } catch (InterruptedException error) {
+                        toView = null;
                     }
-                    fileViewerFrame.pack();
-                    fileViewerFrame.setTitle("Source Code & References - " + donePages.get(row).getLink());
-                    fileViewerFrame.setVisible(true);
+                    if(toView == null){
+                        JOptionPane.showMessageDialog(
+                            null,
+                            "Page is not loaded properly. Please Try Again Later.",
+                            "Page Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    }else{
+
+                        fileViewerFrame.pack();
+                        fileViewerFrame.setTitle("Source Code & References - " + toView.getLink());
+                        fileViewerFrame.setLocationRelativeTo(GUIv2.this);
+                        fileViewerFrame.setVisible(true);
+                    }
                 }
             }
         }
@@ -347,10 +499,11 @@ public class GUIv2 extends javax.swing.JFrame {
                 .addComponent(statusLabel)
                 .addComponent(seedLabel))
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-            .addGroup(seedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                .addComponent(seedInput, javax.swing.GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE)
-                .addComponent(statusCode, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGap(8, 8, 8))
+            .addGroup(seedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(seedPanelLayout.createSequentialGroup()
+                    .addComponent(statusCode, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(104, Short.MAX_VALUE))
+                .addComponent(seedInput)))
     );
     seedPanelLayout.setVerticalGroup(
         seedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -361,8 +514,8 @@ public class GUIv2 extends javax.swing.JFrame {
                 .addComponent(seedLabel))
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
             .addGroup(seedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                .addComponent(statusLabel)
-                .addComponent(statusCode)))
+                .addComponent(statusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(statusCode, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
     );
 
     javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
@@ -371,13 +524,13 @@ public class GUIv2 extends javax.swing.JFrame {
         mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
         .addGroup(mainPanelLayout.createSequentialGroup()
             .addGap(21, 21, 21)
-            .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+            .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(pageScrollPane)
-                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, mainPanelLayout.createSequentialGroup()
+                .addGroup(mainPanelLayout.createSequentialGroup()
                     .addComponent(seedPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
                     .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-            .addContainerGap(21, Short.MAX_VALUE))
+            .addGap(21, 21, 21))
     );
     mainPanelLayout.setVerticalGroup(
         mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -422,63 +575,12 @@ public class GUIv2 extends javax.swing.JFrame {
 
     menuBar.add(fileMenu);
 
-    editMenu.setText("Edit");
-    editMenu.setFont(new java.awt.Font("DejaVu Sans", 0, 13)); // NOI18N
-
-    noOfSitesMenu.setText("Set Number of Websites to Crawl");
-    noOfSitesMenu.addActionListener(new java.awt.event.ActionListener() {
+    settingsMenu.setText("Settings");
+    settingsMenu.addActionListener(new java.awt.event.ActionListener() {
         public void actionPerformed(java.awt.event.ActionEvent evt) {
-            noOfSitesMenuActionPerformed(evt);
+            settingsMenuActionPerformed(evt);
         }
     });
-    editMenu.add(noOfSitesMenu);
-
-    downloadThreadMenu.setText("Number of Download Threads");
-    editMenu.add(downloadThreadMenu);
-    downloadThreadBG = new ButtonGroup();
-    ArrayList<JCheckBoxMenuItem> downloadThreadChoices = new ArrayList<JCheckBoxMenuItem>();
-    for(int i = 1; i<11; i++){
-        downloadThreadChoices.add(new JCheckBoxMenuItem(String.valueOf(i)));
-    }
-    for(JCheckBoxMenuItem checkbox : downloadThreadChoices){
-        if (checkbox.getText().equals(String.valueOf(noOfDownload))){
-            checkbox.setSelected(true);
-        }
-        checkbox.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent changeEvent){
-                JCheckBoxMenuItem checkbox = (JCheckBoxMenuItem)changeEvent.getSource();
-                if (checkbox.isSelected()) noOfDownload = Integer.parseInt(checkbox.getText());
-            }
-        });
-        downloadThreadMenu.add(checkbox);
-        downloadThreadBG.add(checkbox);
-    }
-
-    processingThreadMenu.setText("Number of Processing Threads");
-    editMenu.add(processingThreadMenu);
-    ButtonGroup processThreadBG = new ButtonGroup();
-
-    ArrayList<JCheckBoxMenuItem> processThreadChoices = new ArrayList<JCheckBoxMenuItem>();
-    for(int i = 1; i<11; i++){
-        processThreadChoices.add(new JCheckBoxMenuItem(String.valueOf(i)));
-    }
-    for(JCheckBoxMenuItem checkbox : processThreadChoices){
-        if (checkbox.getText().equals(String.valueOf(noOfProcess))){
-            checkbox.setSelected(true);
-        }
-        checkbox.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent changeEvent){
-                JCheckBoxMenuItem checkbox = (JCheckBoxMenuItem)changeEvent.getSource();
-                if (checkbox.isSelected()) noOfProcess = Integer.parseInt(checkbox.getText());
-            }
-        });
-        processingThreadMenu.add(checkbox);
-        processThreadBG.add(checkbox);
-    }
-
-    menuBar.add(editMenu);
-
-    settingsMenu.setText("Settings");
 
     preferenceMenuItem.setText("Preference");
     preferenceMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -572,28 +674,9 @@ public class GUIv2 extends javax.swing.JFrame {
     private void clearBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearBtnActionPerformed
         // TODO add your handling code here:
         seeds.clear();
-        donePages.clear();
+        donePagesHashMap.clear();
         dtm.setRowCount(0);
     }//GEN-LAST:event_clearBtnActionPerformed
-
-    private void noOfSitesMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_noOfSitesMenuActionPerformed
-        // TODO add your handling code here:
-        int urlsSize = 0;
-        do {
-            String input = JOptionPane.showInputDialog("Enter number of website to crawl.");
-            try {
-                urlsSize = Integer.parseInt(input);
-                if (urlsSize <= 0) {
-                    JOptionPane.showMessageDialog(pageScrollPane, "Number of Urls cannot be less than 1.");
-                    urlsSize = 0;
-                }
-            } catch (NumberFormatException e) {
-                urlsSize = 0;
-            }
-        } while (urlsSize == 0);
-        numberOfURLs = urlsSize;
-
-    }//GEN-LAST:event_noOfSitesMenuActionPerformed
 
     private void openInBrowserBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openInBrowserBtnActionPerformed
         // TODO add your handling code here:
@@ -619,7 +702,7 @@ public class GUIv2 extends javax.swing.JFrame {
                 try {
                     fis = new FileInputStream(file);
                     ObjectInputStream ois = new ObjectInputStream(fis);
-                    donePages = (List< Page>) ois.readObject();
+                    donePagesHashMap = (HashMap<String, Page>) ois.readObject();
                 } catch (FileNotFoundException ex) {
                     Logger.getLogger(GUIv2.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (IOException ex) {
@@ -634,16 +717,16 @@ public class GUIv2 extends javax.swing.JFrame {
                     }
                 }
             }
-            for (Page page : donePages){
+            for (Map.Entry<String,Page> entry : donePagesHashMap.entrySet()) {
                 dtm = (DefaultTableModel) pageTable.getModel();
                 dtm.addRow(new Object[][]{null, null, null, null});
                 while (dtm.getValueAt(emptyRow, 0) != null) {
                     emptyRow++;
                 }
-                dtm.setValueAt(page.getLink(), emptyRow, 0);
+                dtm.setValueAt(entry.getValue().getLink(), emptyRow, 0);
                 dtm.setValueAt(100, emptyRow, 1);
                 dtm.setValueAt("Downloaded", emptyRow, 2);
-                dtm.setValueAt(page.getReferences().size(), emptyRow, 3);
+                dtm.setValueAt(entry.getValue().getReferences().size(), emptyRow, 3);
             }
         }
     }//GEN-LAST:event_openMenuActionPerformed
@@ -658,7 +741,7 @@ public class GUIv2 extends javax.swing.JFrame {
                 System.out.println("File selected : " + file.getName());
                 fos = new FileOutputStream(file + ".crawl");
                 try (ObjectOutputStream oos = new ObjectOutputStream(fos)) {
-                    oos.writeObject(donePages);
+                    oos.writeObject(donePagesHashMap);
                 }
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(GUIv2.class.getName()).log(Level.SEVERE, null, ex);
@@ -676,8 +759,60 @@ public class GUIv2 extends javax.swing.JFrame {
 
     private void preferenceMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_preferenceMenuItemActionPerformed
         // TODO add your handling code here:
-        System.out.println("test");
+        preferenceDialog.pack();
+        preferenceDialog.setLocationRelativeTo(GUIv2.this);
+        preferenceDialog.show();
     }//GEN-LAST:event_preferenceMenuItemActionPerformed
+
+    private void settingsMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_settingsMenuActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_settingsMenuActionPerformed
+
+    private void cancelSettingsButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cancelSettingsButtonMouseClicked
+        // TODO add your handling code here:
+        int option = JOptionPane.showConfirmDialog(
+                null, "You are exiting Application Settings.\n"
+                + "All changes made will be deleted.\nAre You sure?",
+                "Exiting Settings", JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+        if (option == JOptionPane.YES_OPTION) {
+            resetSettings();
+            preferenceDialog.dispose();
+        }
+    }//GEN-LAST:event_cancelSettingsButtonMouseClicked
+
+    private void saveSettingsBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_saveSettingsBtnMouseClicked
+        // TODO add your handling code here:
+        boolean inputIsInteger;
+        try{
+            Integer.parseInt(pagesInput.getText());
+            inputIsInteger = true;
+        }catch(NumberFormatException e){
+            inputIsInteger = false;
+        }
+        if (pagesInput.getText().isEmpty() || !inputIsInteger) {
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Invalid Settings. Please try again.",
+                    "Settings Error",
+                    JOptionPane.ERROR_MESSAGE);
+        } else {
+            int option = JOptionPane.showConfirmDialog(
+                    null,
+                    "Are you sure these are the correct settings?",
+                    "Confirmation Dialog",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE
+            );
+            if (option == JOptionPane.YES_OPTION) {
+                noOfDownload = dlSlider.getValue();
+                noOfProcess = pSlider.getValue();
+                numberOfURLs = Integer.parseInt(pagesInput.getText());
+                preferenceDialog.dispose();
+            }
+        }
+
+    }//GEN-LAST:event_saveSettingsBtnMouseClicked
 
     /**
      * @param args the command line arguments
@@ -690,7 +825,7 @@ public class GUIv2 extends javax.swing.JFrame {
          */
         String os = System.getProperty("os.name");
         String theme = "Nimbus";
-        if(os.startsWith("Linux")){
+        if (os.startsWith("Linux")) {
             theme = "GTK+";
         }
         try {
@@ -735,58 +870,37 @@ public class GUIv2 extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addButton;
     private javax.swing.JPanel buttonPanel;
+    private javax.swing.JButton cancelSettingsButton;
     private javax.swing.JButton clearBtn;
     private javax.swing.JMenuItem closeMenu;
-    private javax.swing.JMenu downloadThreadMenu;
-    private javax.swing.ButtonGroup downloadThreadBG;
-    private javax.swing.JMenu editMenu;
+    private javax.swing.JSlider dlSlider;
+    private javax.swing.JLabel dlThreadLabel;
     private javax.swing.JFileChooser fileChooser;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JFrame fileViewerFrame;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JMenuBar menuBar;
-    private javax.swing.JMenuItem noOfSitesMenu;
-    private javax.swing.JLabel numDLThreadLabel;
-    private javax.swing.JLabel numDLThreadLabel1;
-    private javax.swing.JLabel numDLThreadLabel2;
-    private javax.swing.JLabel numDLThreadLabel3;
-    private javax.swing.JLabel numPThreadsLabel;
-    private javax.swing.JLabel numPThreadsLabel1;
-    private javax.swing.JLabel numPThreadsLabel2;
-    private javax.swing.JLabel numPThreadsLabel3;
-    private javax.swing.JTextField numPagesInputField;
-    private javax.swing.JTextField numPagesInputField1;
-    private javax.swing.JTextField numPagesInputField2;
-    private javax.swing.JTextField numPagesInputField3;
-    private javax.swing.JLabel numPagesLabel;
-    private javax.swing.JLabel numPagesLabel1;
-    private javax.swing.JLabel numPagesLabel2;
-    private javax.swing.JLabel numPagesLabel3;
     private javax.swing.JButton openInBrowserBtn;
     private javax.swing.JMenuItem openMenu;
+    private javax.swing.JSlider pSlider;
+    private javax.swing.JLabel pThreadLabel;
+    private javax.swing.JLabel pThreadLabel1;
     private javax.swing.JScrollPane pageScrollPane;
     private javax.swing.JTable pageTable;
+    private javax.swing.JTextField pagesInput;
     private javax.swing.JDialog preferenceDialog;
-    private javax.swing.JDialog preferenceDialog1;
-    private javax.swing.JDialog preferenceDialog2;
-    private javax.swing.JDialog preferenceDialog3;
     private javax.swing.JMenuItem preferenceMenuItem;
     private javax.swing.JPanel preferencePanel;
-    private javax.swing.JPanel preferencePanel1;
-    private javax.swing.JPanel preferencePanel2;
-    private javax.swing.JPanel preferencePanel3;
-    private javax.swing.JMenu processingThreadMenu;
     private javax.swing.JLabel referenceLabel;
     private javax.swing.JList referenceList;
     private javax.swing.JScrollPane referencePanel;
     private javax.swing.JMenuItem saveMenu;
+    private javax.swing.JButton saveSettingsBtn;
     private javax.swing.JTextField seedInput;
     private javax.swing.JLabel seedLabel;
     private javax.swing.JPanel seedPanel;
+    private javax.swing.JPanel settingsButtonPanel;
     private javax.swing.JLabel settingsLabel;
-    private javax.swing.JLabel settingsLabel1;
-    private javax.swing.JLabel settingsLabel2;
-    private javax.swing.JLabel settingsLabel3;
     private javax.swing.JMenu settingsMenu;
     private javax.swing.JTextArea sourceCodeArea;
     private javax.swing.JLabel sourceCodeLabel;

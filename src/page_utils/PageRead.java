@@ -11,7 +11,7 @@ public class PageRead {
             URL url = new URL(pageAddr);
             
             StringBuilder sb;
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()))) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(),"UTF-8"))) {
                 
                 String line;
                 sb = new StringBuilder();

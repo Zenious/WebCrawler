@@ -33,7 +33,7 @@ public class Downloader implements Runnable {
             String url = dlQueue.getURL();
             if (url != null) {
                 Page newPage = new Page(url);
-                if (GUIv2.donePages.contains(newPage)) {
+                if (GUIv2.donePagesHashMap.containsKey(url)) {
                     System.out.println(newPage.getLink() + " | has already been processed");
                     continue;
                 }
@@ -64,16 +64,17 @@ public class Downloader implements Runnable {
                 ExecutorHandler.timer.resetTimer();
                 
                 if (sb == null) {
-                    GUIv2.dtm.setValueAt("Error", rowIndex, 2);
+                    GUIv2.dtm.setValueAt("ERROR OCCURED", rowIndex, 2);
                     GUIv2.dtm.setValueAt(100, rowIndex, 1);
+                    GUIv2.dtm.setValueAt("~nil~", rowIndex, 3);
                     continue;
                 }
                 page.setContent(sb);
-                if(GUIv2.donePages.size() < (GUIv2.numberOfURLs+GUIv2.seeds.size())){
-                    GUIv2.donePages.add(page);                    
+                if(GUIv2.donePagesHashMap.size() < (GUIv2.numberOfURLs+GUIv2.seeds.size())){
+                    GUIv2.donePagesHashMap.put(page.getLink(), page);                            
                     GUIv2.dtm.setValueAt("Downloaded", rowIndex, 2);
                     GUIv2.dtm.setValueAt(50, rowIndex, 1);
-                    System.out.println(GUIv2.donePages.size() + " [+] Downloaded: " + page.getLink());            
+                    System.out.println(GUIv2.donePagesHashMap.size() + " [+] Downloaded: " + page.getLink());            
                 }
                 
                 if(qQueue.isWaiting()){
@@ -81,7 +82,7 @@ public class Downloader implements Runnable {
                     System.out.println("Page added to ProcessQueue: " + page.getLink());
                 }
                 
-                if(GUIv2.donePages.size() >= (GUIv2.numberOfURLs+GUIv2.seeds.size()) ){
+                if(GUIv2.donePagesHashMap.size() >= (GUIv2.numberOfURLs+GUIv2.seeds.size()) ){
                     qQueue.setWaiting(false);
                 }
                 

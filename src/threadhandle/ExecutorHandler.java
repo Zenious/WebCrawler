@@ -11,6 +11,7 @@ package threadhandle;
  */
 import java.awt.Color;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -26,14 +27,16 @@ public class ExecutorHandler extends Thread {
     public static ExecutorService dlExecutor;
     public static ExecutorService pExecutor;
 
-    public static List<String> toDo;//seeds
-    public static DownloadQueue dlQueue = new DownloadQueue();
-    public static ProcessQueue qQueue = new ProcessQueue();
+    private static List<String> toDo;//seeds
+    public static DownloadQueue dlQueue;
+    public static ProcessQueue qQueue;
     
     public static boolean isInactive = false;
     public static TimerThread timer = new TimerThread();
     
     public ExecutorHandler(int d, int p, List<String> seeds) {
+        this.dlQueue = new DownloadQueue();
+        this.qQueue = new ProcessQueue();
         this.numOfDownloadThreads = d;
         this.numOfProcessThreads = p;
         this.toDo = seeds;
@@ -78,19 +81,18 @@ public class ExecutorHandler extends Thread {
                 break;
             }
             try {
-                Thread.sleep(500);
+                Thread.sleep(1000);
             } catch (InterruptedException ex) {
                 Logger.getLogger(ExecutorHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         System.out.println("Done");        
-        GUIv2.statusCode.setText(GUIv2.donePages.size() + " Website Crawled!");
+        GUIv2.statusCode.setText(GUIv2.donePagesHashMap.size() + " Website Crawled!");
         GUIv2.statusCode.setForeground(Color.GREEN);
         
         int count = 1;
-        for(Page page: GUIv2.donePages){           
-            System.out.println(count + " | " + page.getLink() + " | " + page.getReferences().size());
-            count++;
+        for(Map.Entry<String,Page> entry: GUIv2.donePagesHashMap.entrySet()){
+            System.out.println(count + " | " + entry.getValue().getLink() + " | " + entry.getValue().getReferences().size());
         }
     }
 }
