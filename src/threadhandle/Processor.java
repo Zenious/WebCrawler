@@ -69,7 +69,7 @@ public class Processor implements Runnable {
                     }
                     
                     if(GUIv2.donePagesHashMap.size() >= (GUIv2.numberOfURLs+GUIv2.seeds.size())){
-                        dlQueue.setWaiting(true);
+                        dlQueue.setWaiting(false);
                         dlQueue.clear();
                     }
 
