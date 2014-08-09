@@ -367,6 +367,7 @@ public class GUIv2 extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        pageTable.setColumnSelectionAllowed(true);
         pageTable.getColumn (
 
             " ").setCellRenderer(new ProgressBarRender());
@@ -381,8 +382,8 @@ public class GUIv2 extends javax.swing.JFrame {
                 if (e.getClickCount() == 2) {
                     JTable target = (JTable) e.getSource();
                     int row = target.getSelectedRow();
-                    int column = target.getSelectedColumn();
-                    String url = target.getValueAt(row, column).toString();
+                    int column = 0;
+                    String url = target.getValueAt(row, 0).toString();
                     System.out.println(url.toString());
 
                     try {
@@ -414,6 +415,7 @@ public class GUIv2 extends javax.swing.JFrame {
         }
 
     );
+    pageTable.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
 
     buttonPanel.setBackground(new java.awt.Color(254, 254, 254));
 
