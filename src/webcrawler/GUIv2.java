@@ -5,6 +5,7 @@
  */
 package webcrawler;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Desktop;
@@ -27,6 +28,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -38,6 +40,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.JTable;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
@@ -46,9 +49,13 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
+import org.graphstream.algorithm.APSP;
+import org.graphstream.algorithm.APSP.APSPInfo;
 import org.graphstream.graph.implementations.DefaultGraph;
 import org.graphstream.ui.swingViewer.View;
 import org.graphstream.ui.swingViewer.Viewer;
+import org.jdesktop.swingx.JXLabel;
+import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import page_utils.Page;
 import threadhandle.ExecutorHandler;
 
@@ -68,20 +75,23 @@ public class GUIv2 extends javax.swing.JFrame {
     private int noOfDownload = 5;
     private int noOfProcess = 5;
     public static HashMap<Integer, Integer> realIndex;
+    private boolean openBefore = false;
+    private List<String> linkList;
+    private DefaultGraph graph;
 
     /**
      * Creates new form GUIv2
      */
-    public GUIv2(){
+    public GUIv2() {
         initComponents();
         centerAlign();
         try {
-            GraphicsEnvironment ge =  GraphicsEnvironment.getLocalGraphicsEnvironment();
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
             ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("DejaVuSans.ttf")));
             System.out.println("[+] DejaVu Font Added!");
         } catch (IOException | FontFormatException e) {
             System.out.println("[-] DejaVu Font Not Added... Using Default Locale Font...");
-     //Handle exception
+            //Handle exception
         }
     }
 
@@ -131,8 +141,14 @@ public class GUIv2 extends javax.swing.JFrame {
         saveSettingsBtn = new javax.swing.JButton();
         cancelSettingsButton = new javax.swing.JButton();
         jFrame1 = new javax.swing.JFrame();
-        graphPanel = new javax.swing.JPanel();
-        buttonGroup1 = new javax.swing.ButtonGroup();
+        relationshipLabel = new javax.swing.JLabel();
+        sourceField = new javax.swing.JTextField();
+        destinationField = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        searchBtn = new javax.swing.JButton();
+        resultLabel = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        resultArea = new javax.swing.JTextArea();
         mainPanel = new javax.swing.JPanel();
         pageScrollPane = new javax.swing.JScrollPane();
         pageTable = new javax.swing.JTable(){
@@ -368,16 +384,38 @@ public class GUIv2 extends javax.swing.JFrame {
                 .addComponent(settingsButtonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        javax.swing.GroupLayout graphPanelLayout = new javax.swing.GroupLayout(graphPanel);
-        graphPanel.setLayout(graphPanelLayout);
-        graphPanelLayout.setHorizontalGroup(
-            graphPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
-        graphPanelLayout.setVerticalGroup(
-            graphPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
+        jFrame1.setAlwaysOnTop(true);
+        jFrame1.setBackground(new java.awt.Color(255, 255, 255));
+
+        relationshipLabel.setText("Check Relationship");
+
+        sourceField.setText("Source");
+        sourceField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sourceFieldActionPerformed(evt);
+            }
+        });
+
+        destinationField.setText("Destination");
+
+        jLabel2.setText("->");
+
+        searchBtn.setBackground(new java.awt.Color(255, 255, 255));
+        searchBtn.setText("Search");
+        searchBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchBtnActionPerformed(evt);
+            }
+        });
+
+        resultLabel.setText("Result :");
+
+        resultArea.setEditable(false);
+        resultArea.setColumns(20);
+        resultArea.setLineWrap(true);
+        resultArea.setRows(5);
+        resultArea.setWrapStyleWord(true);
+        jScrollPane1.setViewportView(resultArea);
 
         javax.swing.GroupLayout jFrame1Layout = new javax.swing.GroupLayout(jFrame1.getContentPane());
         jFrame1.getContentPane().setLayout(jFrame1Layout);
@@ -385,15 +423,39 @@ public class GUIv2 extends javax.swing.JFrame {
             jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jFrame1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(graphPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(290, Short.MAX_VALUE))
+                .addGroup(jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jFrame1Layout.createSequentialGroup()
+                        .addGroup(jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(relationshipLabel)
+                            .addComponent(sourceField, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(destinationField, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(searchBtn))
+                    .addGroup(jFrame1Layout.createSequentialGroup()
+                        .addComponent(resultLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1)))
+                .addContainerGap(26, Short.MAX_VALUE))
         );
         jFrame1Layout.setVerticalGroup(
             jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jFrame1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(graphPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(189, Short.MAX_VALUE))
+                .addComponent(relationshipLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(sourceField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2)
+                    .addComponent(destinationField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(searchBtn))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(resultLabel)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -555,6 +617,7 @@ public class GUIv2 extends javax.swing.JFrame {
 
     graphBtn.setFont(new java.awt.Font("DejaVu Sans", 0, 13)); // NOI18N
     graphBtn.setText("Graph Mode");
+    graphBtn.setHorizontalAlignment(javax.swing.SwingConstants.LEADING);
     graphBtn.addActionListener(new java.awt.event.ActionListener() {
         public void actionPerformed(java.awt.event.ActionEvent evt) {
             graphBtnActionPerformed(evt);
@@ -573,8 +636,8 @@ public class GUIv2 extends javax.swing.JFrame {
             .addGroup(seedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                 .addGroup(seedPanelLayout.createSequentialGroup()
                     .addComponent(statusCode, javax.swing.GroupLayout.PREFERRED_SIZE, 311, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(graphBtn))
+                    .addGap(18, 18, 18)
+                    .addComponent(graphBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addComponent(seedInput, javax.swing.GroupLayout.PREFERRED_SIZE, 443, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGap(40, 40, 40)
             .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -755,10 +818,13 @@ public class GUIv2 extends javax.swing.JFrame {
 
     private void clearBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearBtnActionPerformed
         // TODO add your handling code here:
+        try{
         seeds.clear();
         donePagesHashMap.clear();
         dtm.setRowCount(0);
+        linkList.clear();
         emptyRow = 0;
+        }catch (Exception e){}
     }//GEN-LAST:event_clearBtnActionPerformed
 
     private void openInBrowserBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openInBrowserBtnActionPerformed
@@ -780,6 +846,9 @@ public class GUIv2 extends javax.swing.JFrame {
         int returnVal = fileChooser.showOpenDialog(openMenu);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             donePagesHashMap.clear();
+            if (dtm == null) {
+                dtm = new DefaultTableModel();
+            }
             dtm.setRowCount(0);
             File file = fileChooser.getSelectedFile();
             if (file.isFile()) {
@@ -802,8 +871,8 @@ public class GUIv2 extends javax.swing.JFrame {
                     }
                 }
             }
-            
-            for (Map.Entry<String,Page> entry : donePagesHashMap.entrySet()) {
+
+            for (Map.Entry<String, Page> entry : donePagesHashMap.entrySet()) {
                 dtm = (DefaultTableModel) pageTable.getModel();
                 dtm.addRow(new Object[][]{null, null, null, null});
                 while (dtm.getValueAt(emptyRow, 0) != null) {
@@ -828,10 +897,10 @@ public class GUIv2 extends javax.swing.JFrame {
                     int option = JOptionPane.showConfirmDialog(pageScrollPane, "Overwrite File?");
                     if (option == JOptionPane.NO_OPTION) {
                         acceptable = false;
-                    }else{
+                    } else {
                         acceptable = true;
                     }
-                }else{
+                } else {
                     acceptable = true;
                 }
             } else {
@@ -843,9 +912,9 @@ public class GUIv2 extends javax.swing.JFrame {
             try {
                 File file = fileChooser.getSelectedFile();
                 System.out.println("File selected : " + file.getName());
-                if (file.getName().endsWith(".crawl")){
+                if (file.getName().endsWith(".crawl")) {
                     fos = new FileOutputStream(file);
-                }else{
+                } else {
                     fos = new FileOutputStream(file + ".crawl");
                 }
                 try (ObjectOutputStream oos = new ObjectOutputStream(fos)) {
@@ -892,10 +961,10 @@ public class GUIv2 extends javax.swing.JFrame {
     private void saveSettingsBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_saveSettingsBtnMouseClicked
         // TODO add your handling code here:
         boolean inputIsInteger;
-        try{
+        try {
             Integer.parseInt(pagesInput.getText());
             inputIsInteger = true;
-        }catch(NumberFormatException e){
+        } catch (NumberFormatException e) {
             inputIsInteger = false;
         }
         if (pagesInput.getText().isEmpty() || !inputIsInteger) {
@@ -924,33 +993,91 @@ public class GUIv2 extends javax.swing.JFrame {
 
     private void graphBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_graphBtnActionPerformed
         // TODO add your handling code here:
-        DefaultGraph graph = new DefaultGraph("Network Graph");
+        List<String> tempList = new LinkedList<>();
+        graph = new DefaultGraph("Network Graph");
         int referenceCount = 0;
-        for (Map.Entry<String,Page> entry : donePagesHashMap.entrySet()){
+        for (Map.Entry<String, Page> entry : donePagesHashMap.entrySet()) {
             String link = entry.getValue().getLink();
-            if (graph.getNode(link) == null){
-            graph.addNode(link);
+            if (graph.getNode(link) == null) {
+                graph.addNode(link);
+                graph.getNode(link).addAttribute("ui.label", link);
+                tempList.add(link);
             }
-            for (String ref :entry.getValue().getReferences()){
-                if (graph.getNode(ref) == null){
-                    System.out.println("[*] Does not exist");
+            for (String ref : entry.getValue().getReferences()) {
+                if (graph.getNode(ref) == null) {
+                    // System.out.println("[*] Does not exist");
                     graph.addNode(ref);
-                }else{
-                    System.out.println("[*] Exist!");
+                    graph.getNode(ref).addAttribute("ui.label", ref);
+                    tempList.add(ref);
+                } else {
+                    //  System.out.println("[*] Exist!");
                 }
-            String refName = "Reference".concat(String.valueOf(referenceCount));
-            graph.addEdge(refName, link, ref, true);
-            referenceCount++;
-                    }
+                String refName = "Reference".concat(String.valueOf(referenceCount));
+                graph.addEdge(refName, link, ref, true);
+                referenceCount++;
+            }
         }
-  Viewer viewer = graph.display();
-  viewer.setCloseFramePolicy(Viewer.CloseFramePolicy.CLOSE_VIEWER);
-//Viewer viewer = new Viewer(graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
-     //   View view = viewer.addDefaultView(false);
-//        jFrame1.add(view);
-    //    jFrame1.pack();
-  //      jFrame1.setVisible(true);
+        linkList = Collections.unmodifiableList(tempList);
+        AutoCompleteDecorator.decorate(sourceField, linkList, false);
+        AutoCompleteDecorator.decorate(destinationField, linkList, false);
+        APSP apsp = new APSP();
+        apsp.setDirected(true);
+        apsp.init(graph);
+        apsp.setWeightAttributeName("weight");
+        apsp.compute();
+        System.out.println("[*] Computing using All Pair Shortest Pair Algo");
+        /*
+         if (graph.getNode("http://www.google.com.sg") == null) {
+         System.out.println("[*] Does not exist!");
+         }
+         APSPInfo info = graph.getNode("http://www.google.com").getAttribute(APSPInfo.ATTRIBUTE_NAME);
+         System.out.println(info.getShortestPathTo("https://play.google.com/"));
+         */
+
+        //System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
+        graph.addAttribute("ui.antialias");
+        graph.addAttribute("ui.quality");
+        graph.addAttribute("ui.stylesheet", "node {text-mode: hidden;}");
+        Viewer viewer = graph.display();
+        View view = viewer.getDefaultView();
+        // Viewer viewer = new Viewer(graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
+        viewer.setCloseFramePolicy(Viewer.CloseFramePolicy.CLOSE_VIEWER);
+        /*   View view = viewer.addDefaultView(false);
+         view.getCamera().resetView();
+         if(!openBefore){
+         jFrame1.add(graphPanel);
+         graphPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+         graphPanel.setLayout(new BorderLayout(0, 0));
+         graphPanel.add(view, BorderLayout.CENTER);
+         openBefore = true;*/
+        //  }
+        jFrame1.setTitle("Search for Relations...");
+        jFrame1.pack();
+        jFrame1.setLocationRelativeTo(null);
+        jFrame1.setVisible(true);
     }//GEN-LAST:event_graphBtnActionPerformed
+
+    private void sourceFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sourceFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_sourceFieldActionPerformed
+
+    private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
+        // TODO add your handling code here:
+        APSPInfo info = graph.getNode(sourceField.getText()).getAttribute(APSPInfo.ATTRIBUTE_NAME);
+        String result = info.getShortestPathTo(destinationField.getText()).toString();
+        result = result.substring(1, result.length() - 1);
+        if (result.isEmpty()) {
+            resultArea.setText("No Path from " + sourceField.getText() + " to " + destinationField.getText());
+        } else {
+            String[] resultArray = result.split(",");
+            StringBuilder pathString = new StringBuilder("Path Found!");
+            for (String path : resultArray) {
+                pathString.append("  -->  ");
+                pathString.append(path);
+            }
+            resultArea.setText(pathString.toString());
+        }
+    }//GEN-LAST:event_searchBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -997,9 +1124,9 @@ public class GUIv2 extends javax.swing.JFrame {
                 setValue(progress);
             } else if (value instanceof Integer) {
                 progress = (int) value;
-                if (progress >100){
+                if (progress > 100) {
                     this.setForeground(Color.red);
-                }else{
+                } else {
                     this.setForeground(Color.BLUE);
                 }
                 setValue(progress);
@@ -1012,19 +1139,20 @@ public class GUIv2 extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addButton;
-    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JPanel buttonPanel;
     private javax.swing.JButton cancelSettingsButton;
     private javax.swing.JButton clearBtn;
     private javax.swing.JMenuItem closeMenu;
+    private javax.swing.JTextField destinationField;
     private javax.swing.JSlider dlSlider;
     private javax.swing.JLabel dlThreadLabel;
     private javax.swing.JFileChooser fileChooser;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JFrame fileViewerFrame;
     private javax.swing.JButton graphBtn;
-    private javax.swing.JPanel graphPanel;
     private javax.swing.JFrame jFrame1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JButton openInBrowserBtn;
@@ -1041,8 +1169,12 @@ public class GUIv2 extends javax.swing.JFrame {
     private javax.swing.JLabel referenceLabel;
     private javax.swing.JList referenceList;
     private javax.swing.JScrollPane referencePanel;
+    private javax.swing.JLabel relationshipLabel;
+    private javax.swing.JTextArea resultArea;
+    private javax.swing.JLabel resultLabel;
     private javax.swing.JMenuItem saveMenu;
     private javax.swing.JButton saveSettingsBtn;
+    private javax.swing.JButton searchBtn;
     private javax.swing.JTextField seedInput;
     private javax.swing.JLabel seedLabel;
     private javax.swing.JPanel seedPanel;
@@ -1052,6 +1184,7 @@ public class GUIv2 extends javax.swing.JFrame {
     private javax.swing.JTextArea sourceCodeArea;
     private javax.swing.JLabel sourceCodeLabel;
     private javax.swing.JScrollPane sourceCodePanel;
+    private javax.swing.JTextField sourceField;
     public static javax.swing.JLabel statusCode;
     private javax.swing.JLabel statusLabel;
     private javax.swing.JButton submitButton;
