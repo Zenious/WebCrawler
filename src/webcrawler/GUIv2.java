@@ -9,6 +9,9 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontFormatException;
+import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -66,9 +69,17 @@ public class GUIv2 extends javax.swing.JFrame {
     /**
      * Creates new form GUIv2
      */
-    public GUIv2() {
+    public GUIv2(){
         initComponents();
         centerAlign();
+        try {
+            GraphicsEnvironment ge =  GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("DejaVuSans.ttf")));
+            System.out.println("[+] DejaVu Font Added!");
+        } catch (IOException | FontFormatException e) {
+            System.out.println("[-] DejaVu Font Not Added... Using Default Locale Font...");
+     //Handle exception
+        }
     }
 
     private void centerAlign() {
