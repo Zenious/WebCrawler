@@ -166,10 +166,10 @@
                           </Group>
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                          <Component id="pSlider" alignment="1" pref="0" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="pSlider" alignment="0" pref="0" max="32767" attributes="0"/>
+                          <Component id="pagesInput" alignment="0" pref="152" max="32767" attributes="0"/>
                           <Component id="dlSlider" pref="0" max="32767" attributes="0"/>
-                          <Component id="pagesInput" alignment="0" min="-2" pref="152" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace pref="63" max="32767" attributes="0"/>
                   </Group>
@@ -224,13 +224,35 @@
             </Component>
             <Component class="javax.swing.JSlider" name="dlSlider">
               <Properties>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="ff" green="ff" red="ff" type="rgb"/>
+                </Property>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="0" green="0" red="0" type="rgb"/>
+                </Property>
+                <Property name="majorTickSpacing" type="int" value="5"/>
                 <Property name="maximum" type="int" value="20"/>
+                <Property name="minorTickSpacing" type="int" value="1"/>
+                <Property name="paintLabels" type="boolean" value="true"/>
+                <Property name="paintTicks" type="boolean" value="true"/>
+                <Property name="snapToTicks" type="boolean" value="true"/>
                 <Property name="value" type="int" value="5"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JSlider" name="pSlider">
               <Properties>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="ff" green="ff" red="ff" type="rgb"/>
+                </Property>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="0" green="0" red="0" type="rgb"/>
+                </Property>
+                <Property name="majorTickSpacing" type="int" value="5"/>
                 <Property name="maximum" type="int" value="20"/>
+                <Property name="minorTickSpacing" type="int" value="1"/>
+                <Property name="paintLabels" type="boolean" value="true"/>
+                <Property name="paintTicks" type="boolean" value="true"/>
+                <Property name="snapToTicks" type="boolean" value="true"/>
                 <Property name="value" type="int" value="5"/>
               </Properties>
             </Component>

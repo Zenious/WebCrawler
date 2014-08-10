@@ -241,10 +241,24 @@ public class GUIv2 extends javax.swing.JFrame {
         pThreadLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         pThreadLabel.setText("No. of Process Thread(s):");
 
+        dlSlider.setBackground(new java.awt.Color(255, 255, 255));
+        dlSlider.setForeground(new java.awt.Color(0, 0, 0));
+        dlSlider.setMajorTickSpacing(5);
         dlSlider.setMaximum(20);
+        dlSlider.setMinorTickSpacing(1);
+        dlSlider.setPaintLabels(true);
+        dlSlider.setPaintTicks(true);
+        dlSlider.setSnapToTicks(true);
         dlSlider.setValue(5);
 
+        pSlider.setBackground(new java.awt.Color(255, 255, 255));
+        pSlider.setForeground(new java.awt.Color(0, 0, 0));
+        pSlider.setMajorTickSpacing(5);
         pSlider.setMaximum(20);
+        pSlider.setMinorTickSpacing(1);
+        pSlider.setPaintLabels(true);
+        pSlider.setPaintTicks(true);
+        pSlider.setSnapToTicks(true);
         pSlider.setValue(5);
 
         pThreadLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -268,10 +282,10 @@ public class GUIv2 extends javax.swing.JFrame {
                         .addComponent(dlThreadLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(pThreadLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
-                .addGroup(preferencePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                .addGroup(preferencePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(pSlider, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(dlSlider, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(pagesInput, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(pagesInput, javax.swing.GroupLayout.DEFAULT_SIZE, 152, Short.MAX_VALUE)
+                    .addComponent(dlSlider, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addContainerGap(63, Short.MAX_VALUE))
         );
         preferencePanelLayout.setVerticalGroup(
