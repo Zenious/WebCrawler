@@ -89,16 +89,11 @@ public class ExecutorHandler extends Thread {
             }
         }
         System.out.println("Done");
-        int downloadingCount = numOfDownloadThreads;
         for (int i = dtm.getRowCount()-1; i>=0; i--){
             String jobTask = (String.valueOf(dtm.getValueAt(i, 2)));
             System.out.println(jobTask + i);
             if (jobTask.equalsIgnoreCase("Downloading")){
                 dtm.setValueAt("Stopped As Quota Reached", i, 2);
-                downloadingCount--;
-                if (downloadingCount < 0){
-                    break;
-                }
             }else if (jobTask.isEmpty()){
                 dtm.removeRow(i);
                 System.out.println("Empty Row Deleted!");
