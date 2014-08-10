@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package webcrawler;
+package main;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -184,6 +184,8 @@ public class GUIv2 extends javax.swing.JFrame {
         closeMenu = new javax.swing.JMenuItem();
         settingsMenu = new javax.swing.JMenu();
         preferenceMenuItem = new javax.swing.JMenuItem();
+
+        fileViewerFrame.setBackground(new java.awt.Color(255, 255, 255));
 
         sourceCodeArea.setEditable(false);
         sourceCodeArea.setColumns(20);
@@ -818,13 +820,14 @@ public class GUIv2 extends javax.swing.JFrame {
 
     private void clearBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearBtnActionPerformed
         // TODO add your handling code here:
-        try{
-        seeds.clear();
-        donePagesHashMap.clear();
-        dtm.setRowCount(0);
-        linkList.clear();
-        emptyRow = 0;
-        }catch (Exception e){}
+        try {
+            seeds.clear();
+            donePagesHashMap.clear();
+            dtm.setRowCount(0);
+            linkList.clear();
+            emptyRow = 0;
+        } catch (Exception e) {
+        }
     }//GEN-LAST:event_clearBtnActionPerformed
 
     private void openInBrowserBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openInBrowserBtnActionPerformed
@@ -1024,8 +1027,9 @@ public class GUIv2 extends javax.swing.JFrame {
         apsp.setDirected(true);
         apsp.init(graph);
         apsp.setWeightAttributeName("weight");
-        apsp.compute();
         System.out.println("[*] Computing using All Pair Shortest Pair Algo");
+        apsp.compute();
+        System.out.println("[*] Computed using All Pair Shortest Pair Algo");
         /*
          if (graph.getNode("http://www.google.com.sg") == null) {
          System.out.println("[*] Does not exist!");

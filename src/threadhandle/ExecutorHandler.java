@@ -18,8 +18,8 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import page_utils.Page;
-import webcrawler.GUIv2;
-import static webcrawler.GUIv2.dtm;
+import main.GUIv2;
+import static main.GUIv2.dtm;
 
 public class ExecutorHandler extends Thread {
 

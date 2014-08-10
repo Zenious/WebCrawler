@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 import page_utils.Page;
 import static threadhandle.ExecutorHandler.qQueue;
 import static threadhandle.ExecutorHandler.dlQueue;
-import webcrawler.GUIv2;
+import main.GUIv2;
 
 /**
  *

@@ -11,8 +11,8 @@ import page_utils.Page;
 import page_utils.PageRead;
 import static threadhandle.ExecutorHandler.dlQueue;
 import static threadhandle.ExecutorHandler.qQueue;
-import webcrawler.GUIv2;
-import static webcrawler.GUIv2.dtm;
+import main.GUIv2;
+import static main.GUIv2.dtm;
 
 /**
  *
