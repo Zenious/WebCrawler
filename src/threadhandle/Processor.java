@@ -75,7 +75,8 @@ public class Processor implements Runnable {
 
                 }
                 this.processingPage.setReferences(URLs);
-                GUIv2.donePagesHashMap.put(processingPage.getLink(), pageToProcess);                
+                System.out.println("[*] Size of references - "+processingPage.getLink()+processingPage.getReferences().size());
+                GUIv2.donePagesHashMap.put(processingPage.getLink(), processingPage);                
                 GUIv2.dtm.setValueAt(100, rowIndex, 1);
                 GUIv2.dtm.setValueAt("Processed", rowIndex, 2);
                 GUIv2.dtm.setValueAt(URLs.size(), rowIndex, 3);

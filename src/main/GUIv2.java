@@ -392,11 +392,6 @@ public class GUIv2 extends javax.swing.JFrame {
         relationshipLabel.setText("Check Relationship");
 
         sourceField.setText("Source");
-        sourceField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                sourceFieldActionPerformed(evt);
-            }
-        });
 
         destinationField.setText("Destination");
 
@@ -510,14 +505,16 @@ public class GUIv2 extends javax.swing.JFrame {
                     int row = target.getSelectedRow();
                     int column = 0;
                     String url = target.getValueAt(row, 0).toString();
-                    System.out.println(url.toString());
+                    System.out.println(url);
 
                     try {
                         toView = donePagesHashMap.get(url);
                         sourceCodeArea.setText(toView.getContent().toString());
                         DefaultListModel model = new DefaultListModel();
+                        System.out.println(toView.getReferences().size());
                         for (String ref : toView.getReferences()) {
                             model.addElement(ref);
+                            System.out.println(ref);
                         }
                         referenceList.setModel(model);
                     } catch (InterruptedException|NullPointerException error) {
@@ -760,6 +757,7 @@ public class GUIv2 extends javax.swing.JFrame {
             if (seeds.contains(seedInput.getText())) {
                 JOptionPane.showMessageDialog(pageScrollPane, "Url already inside list!", "Duplicated url", JOptionPane.INFORMATION_MESSAGE);
             } else {
+                emptyRow = 0;
                 seeds.add(seedInput.getText());
                 dtm = (DefaultTableModel) pageTable.getModel();
                 dtm.addRow(new Object[][]{null, null, null, null});
@@ -1061,12 +1059,11 @@ public class GUIv2 extends javax.swing.JFrame {
         jFrame1.setVisible(true);
     }//GEN-LAST:event_graphBtnActionPerformed
 
-    private void sourceFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sourceFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_sourceFieldActionPerformed
-
     private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
         // TODO add your handling code here:
+        if(!linkList.contains(sourceField.getText()) || !linkList.contains(destinationField.getText())){
+            JOptionPane.showMessageDialog(pageScrollPane, "Please Enter valid link!", "Invalid link!", JOptionPane.INFORMATION_MESSAGE);
+        }else{
         APSPInfo info = graph.getNode(sourceField.getText()).getAttribute(APSPInfo.ATTRIBUTE_NAME);
         String result = info.getShortestPathTo(destinationField.getText()).toString();
         result = result.substring(1, result.length() - 1);
@@ -1081,8 +1078,9 @@ public class GUIv2 extends javax.swing.JFrame {
             }
             resultArea.setText(pathString.toString());
         }
+        }
     }//GEN-LAST:event_searchBtnActionPerformed
-
+    
     /**
      * @param args the command line arguments
      */

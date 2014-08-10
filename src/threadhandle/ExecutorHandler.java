@@ -91,7 +91,6 @@ public class ExecutorHandler extends Thread {
         System.out.println("Done");
         for (int i = dtm.getRowCount()-1; i>=0; i--){
             String jobTask = (String.valueOf(dtm.getValueAt(i, 2)));
-            System.out.println(jobTask + i);
             if (jobTask.equalsIgnoreCase("Downloading")){
                 dtm.setValueAt("Stopped As Quota Reached", i, 2);
             }else if (jobTask.isEmpty()){
