@@ -145,15 +145,15 @@ public class GUIv2 extends javax.swing.JFrame {
                 return tip;
             }
         };
-        buttonPanel = new javax.swing.JPanel();
-        addButton = new javax.swing.JButton();
-        submitButton = new javax.swing.JButton();
-        clearBtn = new javax.swing.JButton();
         seedPanel = new javax.swing.JPanel();
         seedInput = new javax.swing.JTextField();
         seedLabel = new javax.swing.JLabel();
         statusLabel = new javax.swing.JLabel();
         statusCode = new javax.swing.JLabel();
+        buttonPanel = new javax.swing.JPanel();
+        addButton = new javax.swing.JButton();
+        submitButton = new javax.swing.JButton();
+        clearBtn = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         openMenu = new javax.swing.JMenuItem();
@@ -428,6 +428,34 @@ public class GUIv2 extends javax.swing.JFrame {
     );
     pageTable.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
 
+    seedPanel.setBackground(new java.awt.Color(254, 254, 254));
+
+    seedInput.setFont(new java.awt.Font("DejaVu Sans", 0, 13)); // NOI18N
+    seedInput.setText("Enter Website...");
+    seedInput.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            seedInputActionPerformed(evt);
+        }
+    });
+    seedInput.addFocusListener(new java.awt.event.FocusAdapter() {
+        public void focusGained(java.awt.event.FocusEvent evt) {
+            seedInputFocusGained(evt);
+        }
+        public void focusLost(java.awt.event.FocusEvent evt) {
+            seedInputFocusLost(evt);
+        }
+    });
+
+    seedLabel.setFont(new java.awt.Font("DejaVu Sans", 0, 13)); // NOI18N
+    seedLabel.setText("Seed :");
+
+    statusLabel.setFont(new java.awt.Font("DejaVu Sans", 0, 13)); // NOI18N
+    statusLabel.setText("Status :");
+
+    statusCode.setFont(new java.awt.Font("DejaVu Sans", 0, 13)); // NOI18N
+    statusCode.setForeground(new java.awt.Color(0, 255, 0));
+    statusCode.setText("Ready!");
+
     buttonPanel.setBackground(new java.awt.Color(254, 254, 254));
 
     addButton.setFont(new java.awt.Font("DejaVu Sans", 0, 13)); // NOI18N
@@ -459,49 +487,21 @@ public class GUIv2 extends javax.swing.JFrame {
     buttonPanelLayout.setHorizontalGroup(
         buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, buttonPanelLayout.createSequentialGroup()
-            .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(addButton)
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addComponent(submitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 53, Short.MAX_VALUE))
+            .addComponent(submitButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         .addComponent(clearBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
     );
     buttonPanelLayout.setVerticalGroup(
         buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
         .addGroup(buttonPanelLayout.createSequentialGroup()
-            .addGap(11, 11, 11)
+            .addContainerGap()
             .addGroup(buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(submitButton)
                 .addComponent(addButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGap(12, 12, 12)
             .addComponent(clearBtn))
     );
-
-    seedPanel.setBackground(new java.awt.Color(254, 254, 254));
-
-    seedInput.setFont(new java.awt.Font("DejaVu Sans", 0, 13)); // NOI18N
-    seedInput.setText("Enter Website...");
-    seedInput.addActionListener(new java.awt.event.ActionListener() {
-        public void actionPerformed(java.awt.event.ActionEvent evt) {
-            seedInputActionPerformed(evt);
-        }
-    });
-    seedInput.addFocusListener(new java.awt.event.FocusAdapter() {
-        public void focusGained(java.awt.event.FocusEvent evt) {
-            seedInputFocusGained(evt);
-        }
-        public void focusLost(java.awt.event.FocusEvent evt) {
-            seedInputFocusLost(evt);
-        }
-    });
-
-    seedLabel.setFont(new java.awt.Font("DejaVu Sans", 0, 13)); // NOI18N
-    seedLabel.setText("Seed :");
-
-    statusLabel.setFont(new java.awt.Font("DejaVu Sans", 0, 13)); // NOI18N
-    statusLabel.setText("Status :");
-
-    statusCode.setFont(new java.awt.Font("DejaVu Sans", 0, 13)); // NOI18N
-    statusCode.setForeground(new java.awt.Color(0, 255, 0));
-    statusCode.setText("Ready!");
 
     javax.swing.GroupLayout seedPanelLayout = new javax.swing.GroupLayout(seedPanel);
     seedPanel.setLayout(seedPanelLayout);
@@ -513,10 +513,11 @@ public class GUIv2 extends javax.swing.JFrame {
                 .addComponent(seedLabel))
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
             .addGroup(seedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(seedPanelLayout.createSequentialGroup()
-                    .addComponent(statusCode, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(104, Short.MAX_VALUE))
-                .addComponent(seedInput)))
+                .addComponent(statusCode, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(seedInput, javax.swing.GroupLayout.PREFERRED_SIZE, 443, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGap(18, 18, 18)
+            .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
     );
     seedPanelLayout.setVerticalGroup(
         seedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -525,10 +526,13 @@ public class GUIv2 extends javax.swing.JFrame {
             .addGroup(seedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                 .addComponent(seedInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addComponent(seedLabel))
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(seedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                 .addComponent(statusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addComponent(statusCode, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
+        .addGroup(seedPanelLayout.createSequentialGroup()
+            .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGap(0, 0, Short.MAX_VALUE))
     );
 
     javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
@@ -541,8 +545,7 @@ public class GUIv2 extends javax.swing.JFrame {
                 .addComponent(pageScrollPane)
                 .addGroup(mainPanelLayout.createSequentialGroup()
                     .addComponent(seedPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
-                    .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGap(0, 0, Short.MAX_VALUE)))
             .addGap(21, 21, 21))
     );
     mainPanelLayout.setVerticalGroup(
@@ -551,10 +554,8 @@ public class GUIv2 extends javax.swing.JFrame {
             .addGap(21, 21, 21)
             .addComponent(pageScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
             .addGap(10, 10, 10)
-            .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(seedPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGap(21, 21, 21))
+            .addComponent(seedPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGap(26, 26, 26))
     );
 
     menuBar.setFont(new java.awt.Font("DejaVu Sans", 0, 13)); // NOI18N
@@ -595,7 +596,7 @@ public class GUIv2 extends javax.swing.JFrame {
         }
     });
 
-    preferenceMenuItem.setText("Preference");
+    preferenceMenuItem.setText("Preferences");
     preferenceMenuItem.addActionListener(new java.awt.event.ActionListener() {
         public void actionPerformed(java.awt.event.ActionEvent evt) {
             preferenceMenuItemActionPerformed(evt);

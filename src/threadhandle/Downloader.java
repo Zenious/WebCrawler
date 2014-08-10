@@ -47,6 +47,7 @@ public class Downloader implements Runnable {
                     }
                 }
                 if (rowIndex == -1) {
+                    synchronized(dtm){
                     int emptyRow = 0;
                     dtm.addRow(new Object[][]{null, null, null, null});
                     while (dtm.getValueAt(emptyRow, 0) != null) {
@@ -54,19 +55,21 @@ public class Downloader implements Runnable {
                     }
                     dtm.setValueAt(page.getLink(), emptyRow, 0);
                     dtm.setValueAt(0, emptyRow, 1);
-                    dtm.setValueAt("Downloading", emptyRow, 2);
+                    dtm.setValueAt("Queued", emptyRow, 2);
                     rowIndex = emptyRow;
+                    }
                 }
                 
                 ExecutorHandler.timer.resetTimer();
+                dtm.setValueAt("Downloading", rowIndex, 2);
                 sb = PageRead.readPage(page.getLink());
                 // Since a Download might take longer than usual.
                 ExecutorHandler.timer.resetTimer();
                 
                 if (sb == null) {
                     GUIv2.dtm.setValueAt("ERROR OCCURED", rowIndex, 2);
-                    GUIv2.dtm.setValueAt(100, rowIndex, 1);
-                    GUIv2.dtm.setValueAt("~nil~", rowIndex, 3);
+                    GUIv2.dtm.setValueAt(101, rowIndex, 1);
+                    GUIv2.dtm.setValueAt("--", rowIndex, 3);
                     continue;
                 }
                 page.setContent(sb);
