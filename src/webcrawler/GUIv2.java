@@ -132,6 +132,7 @@ public class GUIv2 extends javax.swing.JFrame {
         cancelSettingsButton = new javax.swing.JButton();
         jFrame1 = new javax.swing.JFrame();
         graphPanel = new javax.swing.JPanel();
+        buttonGroup1 = new javax.swing.ButtonGroup();
         mainPanel = new javax.swing.JPanel();
         pageScrollPane = new javax.swing.JScrollPane();
         pageTable = new javax.swing.JTable(){
@@ -552,6 +553,7 @@ public class GUIv2 extends javax.swing.JFrame {
             .addComponent(clearBtn))
     );
 
+    graphBtn.setFont(new java.awt.Font("DejaVu Sans", 0, 13)); // NOI18N
     graphBtn.setText("Graph Mode");
     graphBtn.addActionListener(new java.awt.event.ActionListener() {
         public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -623,6 +625,7 @@ public class GUIv2 extends javax.swing.JFrame {
     fileMenu.setText("File");
     fileMenu.setFont(new java.awt.Font("DejaVu Sans", 0, 13)); // NOI18N
 
+    openMenu.setFont(new java.awt.Font("DejaVu Sans", 0, 13)); // NOI18N
     openMenu.setText("Open");
     openMenu.addActionListener(new java.awt.event.ActionListener() {
         public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -631,6 +634,7 @@ public class GUIv2 extends javax.swing.JFrame {
     });
     fileMenu.add(openMenu);
 
+    saveMenu.setFont(new java.awt.Font("DejaVu Sans", 0, 13)); // NOI18N
     saveMenu.setText("Save");
     saveMenu.addActionListener(new java.awt.event.ActionListener() {
         public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -639,6 +643,7 @@ public class GUIv2 extends javax.swing.JFrame {
     });
     fileMenu.add(saveMenu);
 
+    closeMenu.setFont(new java.awt.Font("DejaVu Sans", 0, 13)); // NOI18N
     closeMenu.setText("Close");
     closeMenu.addActionListener(new java.awt.event.ActionListener() {
         public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -650,12 +655,14 @@ public class GUIv2 extends javax.swing.JFrame {
     menuBar.add(fileMenu);
 
     settingsMenu.setText("Settings");
+    settingsMenu.setFont(new java.awt.Font("DejaVu Sans", 0, 13)); // NOI18N
     settingsMenu.addActionListener(new java.awt.event.ActionListener() {
         public void actionPerformed(java.awt.event.ActionEvent evt) {
             settingsMenuActionPerformed(evt);
         }
     });
 
+    preferenceMenuItem.setFont(new java.awt.Font("DejaVu Sans", 0, 13)); // NOI18N
     preferenceMenuItem.setText("Preferences");
     preferenceMenuItem.addActionListener(new java.awt.event.ActionListener() {
         public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1005,6 +1012,7 @@ public class GUIv2 extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addButton;
+    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JPanel buttonPanel;
     private javax.swing.JButton cancelSettingsButton;
     private javax.swing.JButton clearBtn;
