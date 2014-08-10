@@ -46,6 +46,9 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
+import org.graphstream.graph.implementations.DefaultGraph;
+import org.graphstream.ui.swingViewer.View;
+import org.graphstream.ui.swingViewer.Viewer;
 import page_utils.Page;
 import threadhandle.ExecutorHandler;
 
@@ -127,6 +130,8 @@ public class GUIv2 extends javax.swing.JFrame {
         settingsButtonPanel = new javax.swing.JPanel();
         saveSettingsBtn = new javax.swing.JButton();
         cancelSettingsButton = new javax.swing.JButton();
+        jFrame1 = new javax.swing.JFrame();
+        graphPanel = new javax.swing.JPanel();
         mainPanel = new javax.swing.JPanel();
         pageScrollPane = new javax.swing.JScrollPane();
         pageTable = new javax.swing.JTable(){
@@ -154,6 +159,7 @@ public class GUIv2 extends javax.swing.JFrame {
         addButton = new javax.swing.JButton();
         submitButton = new javax.swing.JButton();
         clearBtn = new javax.swing.JButton();
+        graphBtn = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         openMenu = new javax.swing.JMenuItem();
@@ -226,6 +232,7 @@ public class GUIv2 extends javax.swing.JFrame {
 
         FileFilter filter = new FileNameExtensionFilter(".crawl Files", "crawl");
         fileChooser.setFileFilter(filter);
+        fileChooser.setMaximumSize(new java.awt.Dimension(425, 245));
 
         preferenceDialog.setTitle("Settings - Preferences");
 
@@ -358,6 +365,34 @@ public class GUIv2 extends javax.swing.JFrame {
                 .addComponent(preferencePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(settingsButtonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        javax.swing.GroupLayout graphPanelLayout = new javax.swing.GroupLayout(graphPanel);
+        graphPanel.setLayout(graphPanelLayout);
+        graphPanelLayout.setHorizontalGroup(
+            graphPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        graphPanelLayout.setVerticalGroup(
+            graphPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout jFrame1Layout = new javax.swing.GroupLayout(jFrame1.getContentPane());
+        jFrame1.getContentPane().setLayout(jFrame1Layout);
+        jFrame1Layout.setHorizontalGroup(
+            jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jFrame1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(graphPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(290, Short.MAX_VALUE))
+        );
+        jFrame1Layout.setVerticalGroup(
+            jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jFrame1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(graphPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(189, Short.MAX_VALUE))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -517,6 +552,13 @@ public class GUIv2 extends javax.swing.JFrame {
             .addComponent(clearBtn))
     );
 
+    graphBtn.setText("Graph Mode");
+    graphBtn.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            graphBtnActionPerformed(evt);
+        }
+    });
+
     javax.swing.GroupLayout seedPanelLayout = new javax.swing.GroupLayout(seedPanel);
     seedPanel.setLayout(seedPanelLayout);
     seedPanelLayout.setHorizontalGroup(
@@ -526,10 +568,13 @@ public class GUIv2 extends javax.swing.JFrame {
                 .addComponent(statusLabel)
                 .addComponent(seedLabel))
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-            .addGroup(seedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(statusCode, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(seedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(seedPanelLayout.createSequentialGroup()
+                    .addComponent(statusCode, javax.swing.GroupLayout.PREFERRED_SIZE, 311, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(graphBtn))
                 .addComponent(seedInput, javax.swing.GroupLayout.PREFERRED_SIZE, 443, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGap(18, 18, 18)
+            .addGap(40, 40, 40)
             .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
     );
@@ -543,7 +588,8 @@ public class GUIv2 extends javax.swing.JFrame {
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(seedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                 .addComponent(statusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(statusCode, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addComponent(statusCode, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(graphBtn)))
         .addGroup(seedPanelLayout.createSequentialGroup()
             .addComponent(buttonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addGap(0, 0, Short.MAX_VALUE))
@@ -869,6 +915,36 @@ public class GUIv2 extends javax.swing.JFrame {
 
     }//GEN-LAST:event_saveSettingsBtnMouseClicked
 
+    private void graphBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_graphBtnActionPerformed
+        // TODO add your handling code here:
+        DefaultGraph graph = new DefaultGraph("Network Graph");
+        int referenceCount = 0;
+        for (Map.Entry<String,Page> entry : donePagesHashMap.entrySet()){
+            String link = entry.getValue().getLink();
+            if (graph.getNode(link) == null){
+            graph.addNode(link);
+            }
+            for (String ref :entry.getValue().getReferences()){
+                if (graph.getNode(ref) == null){
+                    System.out.println("[*] Does not exist");
+                    graph.addNode(ref);
+                }else{
+                    System.out.println("[*] Exist!");
+                }
+            String refName = "Reference".concat(String.valueOf(referenceCount));
+            graph.addEdge(refName, link, ref, true);
+            referenceCount++;
+                    }
+        }
+  Viewer viewer = graph.display();
+  viewer.setCloseFramePolicy(Viewer.CloseFramePolicy.CLOSE_VIEWER);
+//Viewer viewer = new Viewer(graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
+     //   View view = viewer.addDefaultView(false);
+//        jFrame1.add(view);
+    //    jFrame1.pack();
+  //      jFrame1.setVisible(true);
+    }//GEN-LAST:event_graphBtnActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -938,6 +1014,9 @@ public class GUIv2 extends javax.swing.JFrame {
     private javax.swing.JFileChooser fileChooser;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JFrame fileViewerFrame;
+    private javax.swing.JButton graphBtn;
+    private javax.swing.JPanel graphPanel;
+    private javax.swing.JFrame jFrame1;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JButton openInBrowserBtn;
