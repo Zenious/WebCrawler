@@ -711,6 +711,8 @@ public class GUIv2 extends javax.swing.JFrame {
         // TODO add your handling code here:
         int returnVal = fileChooser.showOpenDialog(openMenu);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
+            donePagesHashMap.clear();
+            dtm.setRowCount(0);
             File file = fileChooser.getSelectedFile();
             if (file.isFile()) {
                 FileInputStream fis = null;
@@ -732,6 +734,7 @@ public class GUIv2 extends javax.swing.JFrame {
                     }
                 }
             }
+            
             for (Map.Entry<String,Page> entry : donePagesHashMap.entrySet()) {
                 dtm = (DefaultTableModel) pageTable.getModel();
                 dtm.addRow(new Object[][]{null, null, null, null});
