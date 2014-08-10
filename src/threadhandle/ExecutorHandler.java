@@ -9,6 +9,7 @@ package threadhandle;
  *
  * @author Daniel, Koh Zheng Wei
  */
+import com.sun.org.apache.xml.internal.dtm.DTM;
 import java.awt.Color;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import page_utils.Page;
 import webcrawler.GUIv2;
+import static webcrawler.GUIv2.dtm;
 
 public class ExecutorHandler extends Thread {
 
@@ -86,7 +88,22 @@ public class ExecutorHandler extends Thread {
                 Logger.getLogger(ExecutorHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        System.out.println("Done");        
+        System.out.println("Done");
+        int downloadingCount = numOfDownloadThreads;
+        for (int i = dtm.getRowCount()-1; i>=0; i--){
+            String jobTask = (String.valueOf(dtm.getValueAt(i, 2)));
+            System.out.println(jobTask + i);
+            if (jobTask.equalsIgnoreCase("Downloading")){
+                dtm.setValueAt("Stopped As Quota Reached", i, 2);
+                downloadingCount--;
+                if (downloadingCount < 0){
+                    break;
+                }
+            }else if (jobTask.isEmpty()){
+                dtm.removeRow(i);
+                System.out.println("Empty Row Deleted!");
+            }  
+        }       
         GUIv2.statusCode.setText(GUIv2.donePagesHashMap.size() + " Website Crawled!");
         GUIv2.statusCode.setForeground(Color.GREEN);
         
