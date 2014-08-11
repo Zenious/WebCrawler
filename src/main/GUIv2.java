@@ -200,6 +200,7 @@ public class GUIv2 extends javax.swing.JFrame {
 
         referencePanel.setFont(new java.awt.Font("DejaVu Sans", 0, 13)); // NOI18N
 
+        referenceList.setFont(new java.awt.Font("DejaVu Sans", 0, 13)); // NOI18N
         referenceList.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
@@ -231,14 +232,10 @@ public class GUIv2 extends javax.swing.JFrame {
                             .addComponent(sourceCodeLabel))
                         .addGap(18, 18, 18)
                         .addGroup(fileViewerFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(fileViewerFrameLayout.createSequentialGroup()
-                                .addComponent(referenceLabel)
-                                .addGap(0, 200, Short.MAX_VALUE))
-                            .addComponent(referencePanel)))
-                    .addGroup(fileViewerFrameLayout.createSequentialGroup()
-                        .addComponent(openInBrowserBtn)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                            .addComponent(referenceLabel)
+                            .addComponent(referencePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(openInBrowserBtn))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         fileViewerFrameLayout.setVerticalGroup(
             fileViewerFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -512,16 +509,13 @@ public class GUIv2 extends javax.swing.JFrame {
                     int row = target.getSelectedRow();
                     int column = 0;
                     String url = target.getValueAt(row, 0).toString();
-                    System.out.println(url);
 
                     try {
                         toView = donePagesHashMap.get(url);
                         sourceCodeArea.setText(toView.getContent().toString());
                         DefaultListModel model = new DefaultListModel();
-                        System.out.println(toView.getReferences().size());
                         for (String ref : toView.getReferences()) {
                             model.addElement(ref);
-                            System.out.println(ref);
                         }
                         referenceList.setModel(model);
                     } catch (InterruptedException|NullPointerException error) {
@@ -535,6 +529,7 @@ public class GUIv2 extends javax.swing.JFrame {
                             JOptionPane.ERROR_MESSAGE);
                     }else{
                         fileViewerFrame.pack();
+                        fileViewerFrame.setResizable(false);
                         fileViewerFrame.setTitle("Source Code & References - " + toView.getLink());
                         fileViewerFrame.setLocationRelativeTo(GUIv2.this);
                         fileViewerFrame.setVisible(true);

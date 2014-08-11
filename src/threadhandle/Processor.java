@@ -5,8 +5,6 @@
  */
 package threadhandle;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -15,7 +13,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import main.GUIv2;
 import page_utils.Page;
-import sun.awt.windows.ThemeReader;
 import static threadhandle.ExecutorHandler.dlQueue;
 import static threadhandle.ExecutorHandler.qQueue;
 
@@ -32,29 +29,29 @@ public class Processor implements Runnable {
 
     private ThreadLocal<List<String>> URLs = new ThreadLocal<>();
 
-    public static int rowIndex;
+    public ThreadLocal<Integer> rowIndex = new ThreadLocal<Integer>();
 
     @Override
     public void run() {
-        while ((qQueue.isWaiting() || qQueue.hasQueued()) && !ExecutorHandler.isInactive) {           
+        while ((qQueue.isWaiting() || qQueue.hasQueued()) && !ExecutorHandler.isInactive) {
             Page pageToProcess = qQueue.getPage();
             if (pageToProcess != null) {
                 ExecutorHandler.timer.resetTimer();
                 processingPage.set(pageToProcess);
                 URLs.set(new LinkedList<String>());
                 synchronized (processingPage) {
-                    
+
                     try {
                         this.matcher = pattern.matcher(processingPage.get().getContent().toString().toLowerCase());
                     } catch (InterruptedException ex) {
                         Logger.getLogger(Processor.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    System.out.println("\tProcessing: " + processingPage.get().getLink());
-                    rowIndex = -1;
+                    System.out.println("Processing: " + processingPage.get().getLink());
+                    rowIndex.set(-1);
                     for (int i = 0; i < GUIv2.dtm.getRowCount(); i++) {
                         if (processingPage.get().getLink().equalsIgnoreCase((String) (GUIv2.dtm.getValueAt(i, 0)))) {
                             GUIv2.dtm.setValueAt("Processing", i, 2);
-                            rowIndex = i;
+                            rowIndex.set(i);
                             break;
                         }
                     }
@@ -66,7 +63,6 @@ public class Processor implements Runnable {
                                 url = url.substring(0, url.length() - 1);
                             }
                             if (!URLs.get().contains(url)) {
-                                System.out.println(processingPage.get().getLink() + " | " + url);
                                 URLs.get().add(url);
                             } else {
                                 continue;
@@ -76,8 +72,8 @@ public class Processor implements Runnable {
 
                             if (!pageDownloaded) {
                                 if (!dlQueue.isQueued(url) && dlQueue.isWaiting()) {
-
-                                    dlQueue.addURL(url);
+                                    System.out.println(url.substring(url.lastIndexOf(".")));
+                                                                   
                                 }
                             }
 
@@ -91,9 +87,9 @@ public class Processor implements Runnable {
                     }
                     System.out.println("[*] Size of references - " + processingPage.get().getLink() + " | " + processingPage.get().getReferences().size());
                     GUIv2.donePagesHashMap.put(processingPage.get().getLink(), processingPage.get());
-                    GUIv2.dtm.setValueAt(100, rowIndex, 1);
-                    GUIv2.dtm.setValueAt("Processed", rowIndex, 2);
-                    GUIv2.dtm.setValueAt(this.processingPage.get().getReferences().size(), rowIndex, 3);
+                    GUIv2.dtm.setValueAt(100, rowIndex.get(), 1);
+                    GUIv2.dtm.setValueAt("Processed", rowIndex.get(), 2);
+                    GUIv2.dtm.setValueAt(this.processingPage.get().getReferences().size(), rowIndex.get(), 3);
                 }
 
             } else {
