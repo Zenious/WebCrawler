@@ -13,21 +13,21 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="sourceCodePanel" alignment="0" min="-2" pref="342" max="-2" attributes="0"/>
-                              <Component id="sourceCodeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Component id="openInBrowserBtn" min="-2" pref="130" max="-2" attributes="0"/>
+                      <Group type="102" attributes="0">
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="sourceCodePanel" pref="342" max="32767" attributes="0"/>
+                              <Component id="sourceCodeLabel" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="referenceLabel" min="-2" max="-2" attributes="0"/>
-                              <Component id="referencePanel" min="-2" pref="275" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="referencePanel" pref="275" max="32767" attributes="0"/>
+                              <Component id="referenceLabel" max="32767" attributes="0"/>
                           </Group>
                       </Group>
-                      <Component id="openInBrowserBtn" alignment="0" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -126,6 +126,7 @@
               <Font name="DejaVu Sans" size="13" style="0"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Open in browser"/>
+            <Property name="horizontalTextPosition" type="int" value="0"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="openInBrowserBtnActionPerformed"/>

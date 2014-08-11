@@ -204,6 +204,7 @@ public class GUIv2 extends javax.swing.JFrame {
 
         openInBrowserBtn.setFont(new java.awt.Font("DejaVu Sans", 0, 13)); // NOI18N
         openInBrowserBtn.setText("Open in browser");
+        openInBrowserBtn.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         openInBrowserBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 openInBrowserBtnActionPerformed(evt);
@@ -217,15 +218,15 @@ public class GUIv2 extends javax.swing.JFrame {
             .addGroup(fileViewerFrameLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(fileViewerFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(openInBrowserBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(fileViewerFrameLayout.createSequentialGroup()
-                        .addGroup(fileViewerFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(sourceCodePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 342, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(sourceCodeLabel))
+                        .addGroup(fileViewerFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(sourceCodePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 342, Short.MAX_VALUE)
+                            .addComponent(sourceCodeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(18, 18, 18)
-                        .addGroup(fileViewerFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(referenceLabel)
-                            .addComponent(referencePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(openInBrowserBtn))
+                        .addGroup(fileViewerFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(referencePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 275, Short.MAX_VALUE)
+                            .addComponent(referenceLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         fileViewerFrameLayout.setVerticalGroup(
@@ -1057,9 +1058,13 @@ public class GUIv2 extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(pageScrollPane, "Please Enter valid link!", "Invalid link!", JOptionPane.INFORMATION_MESSAGE);
         }else{
         APSPInfo info = graph.getNode(sourceField.getText()).getAttribute(APSPInfo.ATTRIBUTE_NAME);
-        String result = info.getShortestPathTo(destinationField.getText()).toString();
-        result = result.substring(1, result.length() - 1);
-        if (result.isEmpty()) {
+        String result = "";
+        try{
+            result = info.getShortestPathTo(destinationField.getText()).toString();
+            result = result.substring(1, result.length() - 1);
+        }catch(NullPointerException ex){}
+        
+        if (result.trim().isEmpty()) {
             resultArea.setText("No Path from " + sourceField.getText() + " to " + destinationField.getText());
         } else {
             String[] resultArray = result.split(",");

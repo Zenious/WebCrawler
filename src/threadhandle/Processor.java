@@ -32,7 +32,7 @@ public class Processor implements Runnable {
     private ThreadLocal<Page> processingPage = new ThreadLocal<>();
 
     private ThreadLocal<List<String>> URLs = new ThreadLocal<>();
-
+    
     public ThreadLocal<Integer> rowIndex = new ThreadLocal<Integer>();
 
     @Override
