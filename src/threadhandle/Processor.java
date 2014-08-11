@@ -5,8 +5,11 @@
  */
 package threadhandle;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -23,6 +26,7 @@ import static threadhandle.ExecutorHandler.qQueue;
 public class Processor implements Runnable {
 
     private final String regexp = "(https?:\\/\\/)([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?";
+    private final static Set<String> EXCLUDE_EXT = new HashSet<>(Arrays.asList(new String[] {".png",".jpg",".jpeg",".css",".ico",".tiff",".gif",".xml"}));
     private final Pattern pattern = Pattern.compile(regexp);
     private Matcher matcher;
     private ThreadLocal<Page> processingPage = new ThreadLocal<>();
@@ -72,8 +76,9 @@ public class Processor implements Runnable {
 
                             if (!pageDownloaded) {
                                 if (!dlQueue.isQueued(url) && dlQueue.isWaiting()) {
-                                    System.out.println(url.substring(url.lastIndexOf(".")));
-                                                                   
+                                    if(!EXCLUDE_EXT.contains(url.substring(url.lastIndexOf(".")))){
+                                        dlQueue.addURL(url);
+                                    }                                   
                                 }
                             }
 
