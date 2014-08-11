@@ -837,12 +837,11 @@ public class GUIv2 extends javax.swing.JFrame {
 
     private void openMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openMenuActionPerformed
         // TODO add your handling code here:
+        
         int returnVal = fileChooser.showOpenDialog(openMenu);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             donePagesHashMap.clear();
-            if (dtm == null) {
-                dtm = new DefaultTableModel();
-            }
+            dtm = (DefaultTableModel) pageTable.getModel();
             dtm.setRowCount(0);
             File file = fileChooser.getSelectedFile();
             if (file.isFile()) {
@@ -867,7 +866,7 @@ public class GUIv2 extends javax.swing.JFrame {
             }
 
             for (Map.Entry<String, Page> entry : donePagesHashMap.entrySet()) {
-                dtm = (DefaultTableModel) pageTable.getModel();
+                emptyRow = 0;
                 dtm.addRow(new Object[][]{null, null, null, null});
                 while (dtm.getValueAt(emptyRow, 0) != null) {
                     emptyRow++;

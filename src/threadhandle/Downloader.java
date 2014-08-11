@@ -22,6 +22,7 @@ public class Downloader implements Runnable {
 
     private Page page;
     private StringBuilder sb = new StringBuilder();
+    public ThreadLocal<Integer> rowIndex = new ThreadLocal<Integer>();
 
     public Downloader() {
     }
@@ -38,15 +39,15 @@ public class Downloader implements Runnable {
                     continue;
                 }
                 this.page = newPage;
-                int rowIndex = -1;
+                rowIndex.set(-1);
                 for (int i = 0; i < GUIv2.dtm.getRowCount(); i++) {
                     if (page.getLink().equalsIgnoreCase((String) (GUIv2.dtm.getValueAt(i, 0)))) {
                         GUIv2.dtm.setValueAt("Downloading", i, 2);
-                        rowIndex = i;
+                        rowIndex.set(i);
                         break;
                     }
                 }
-                if (rowIndex == -1) {
+                if (rowIndex.get() == -1) {
                     synchronized(dtm){
                     int emptyRow = 0;
                     dtm.addRow(new Object[][]{null, null, null, null});
@@ -56,27 +57,27 @@ public class Downloader implements Runnable {
                     dtm.setValueAt(page.getLink(), emptyRow, 0);
                     dtm.setValueAt(0, emptyRow, 1);
                     dtm.setValueAt("Queued", emptyRow, 2);
-                    rowIndex = emptyRow;
+                    rowIndex.set(emptyRow);
                     }
                 }
                 
                 ExecutorHandler.timer.resetTimer();
-                dtm.setValueAt("Downloading", rowIndex, 2);
+                dtm.setValueAt("Downloading", rowIndex.get(), 2);
                 sb = PageRead.readPage(page.getLink());
                 // Since a Download might take longer than usual.
                 ExecutorHandler.timer.resetTimer();
                 
                 if (sb == null) {
-                    GUIv2.dtm.setValueAt("ERROR OCCURED", rowIndex, 2);
-                    GUIv2.dtm.setValueAt(101, rowIndex, 1);
-                    GUIv2.dtm.setValueAt("--", rowIndex, 3);
+                    GUIv2.dtm.setValueAt("ERROR OCCURED", rowIndex.get(), 2);
+                    GUIv2.dtm.setValueAt(101, rowIndex.get(), 1);
+                    GUIv2.dtm.setValueAt("--", rowIndex.get(), 3);
                     continue;
                 }
                 page.setContent(sb);
                 if(GUIv2.donePagesHashMap.size() < (GUIv2.numberOfURLs+GUIv2.seeds.size())){
                     GUIv2.donePagesHashMap.put(page.getLink(), page);                            
-                    GUIv2.dtm.setValueAt("Downloaded", rowIndex, 2);
-                    GUIv2.dtm.setValueAt(50, rowIndex, 1);
+                    GUIv2.dtm.setValueAt("Downloaded", rowIndex.get(), 2);
+                    GUIv2.dtm.setValueAt(50, rowIndex.get(), 1);
                     System.out.println(GUIv2.donePagesHashMap.size() + " [+] Downloaded: " + page.getLink());            
                 }
     
