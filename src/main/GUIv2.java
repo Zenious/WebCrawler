@@ -186,14 +186,19 @@ public class GUIv2 extends javax.swing.JFrame {
         preferenceMenuItem = new javax.swing.JMenuItem();
 
         fileViewerFrame.setBackground(new java.awt.Color(255, 255, 255));
+        fileViewerFrame.setResizable(false);
 
         sourceCodeArea.setEditable(false);
         sourceCodeArea.setColumns(20);
+        sourceCodeArea.setFont(new java.awt.Font("DejaVu Sans", 0, 13)); // NOI18N
         sourceCodeArea.setLineWrap(true);
         sourceCodeArea.setRows(5);
         sourceCodePanel.setViewportView(sourceCodeArea);
 
+        sourceCodeLabel.setFont(new java.awt.Font("DejaVu Sans", 0, 13)); // NOI18N
         sourceCodeLabel.setText("Source Code:");
+
+        referencePanel.setFont(new java.awt.Font("DejaVu Sans", 0, 13)); // NOI18N
 
         referenceList.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
@@ -202,8 +207,10 @@ public class GUIv2 extends javax.swing.JFrame {
         });
         referencePanel.setViewportView(referenceList);
 
+        referenceLabel.setFont(new java.awt.Font("DejaVu Sans", 0, 13)); // NOI18N
         referenceLabel.setText("References:");
 
+        openInBrowserBtn.setFont(new java.awt.Font("DejaVu Sans", 0, 13)); // NOI18N
         openInBrowserBtn.setText("Open in browser");
         openInBrowserBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -226,7 +233,7 @@ public class GUIv2 extends javax.swing.JFrame {
                         .addGroup(fileViewerFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(fileViewerFrameLayout.createSequentialGroup()
                                 .addComponent(referenceLabel)
-                                .addGap(0, 74, Short.MAX_VALUE))
+                                .addGap(0, 200, Short.MAX_VALUE))
                             .addComponent(referencePanel)))
                     .addGroup(fileViewerFrameLayout.createSequentialGroup()
                         .addComponent(openInBrowserBtn)
@@ -242,7 +249,7 @@ public class GUIv2 extends javax.swing.JFrame {
                     .addComponent(referenceLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(fileViewerFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(referencePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 261, Short.MAX_VALUE)
+                    .addComponent(referencePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(sourceCodePanel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(openInBrowserBtn)

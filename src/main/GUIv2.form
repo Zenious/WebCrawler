@@ -7,6 +7,7 @@
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="ff" green="ff" red="ff" type="rgb"/>
         </Property>
+        <Property name="resizable" type="boolean" value="false"/>
       </Properties>
 
       <Layout>
@@ -24,7 +25,7 @@
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" attributes="0">
                                   <Component id="referenceLabel" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace min="0" pref="74" max="32767" attributes="0"/>
+                                  <EmptySpace min="0" pref="200" max="32767" attributes="0"/>
                               </Group>
                               <Component id="referencePanel" max="32767" attributes="0"/>
                           </Group>
@@ -48,7 +49,7 @@
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                      <Component id="referencePanel" pref="261" max="32767" attributes="0"/>
+                      <Component id="referencePanel" min="-2" pref="261" max="-2" attributes="0"/>
                       <Component id="sourceCodePanel" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -70,6 +71,9 @@
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
                 <Property name="columns" type="int" value="20"/>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="DejaVu Sans" size="13" style="0"/>
+                </Property>
                 <Property name="lineWrap" type="boolean" value="true"/>
                 <Property name="rows" type="int" value="5"/>
               </Properties>
@@ -78,10 +82,18 @@
         </Container>
         <Component class="javax.swing.JLabel" name="sourceCodeLabel">
           <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="DejaVu Sans" size="13" style="0"/>
+            </Property>
             <Property name="text" type="java.lang.String" value="Source Code:"/>
           </Properties>
         </Component>
         <Container class="javax.swing.JScrollPane" name="referencePanel">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="DejaVu Sans" size="13" style="0"/>
+            </Property>
+          </Properties>
           <AuxValues>
             <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
           </AuxValues>
@@ -105,11 +117,17 @@
         </Container>
         <Component class="javax.swing.JLabel" name="referenceLabel">
           <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="DejaVu Sans" size="13" style="0"/>
+            </Property>
             <Property name="text" type="java.lang.String" value="References:"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="openInBrowserBtn">
           <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="DejaVu Sans" size="13" style="0"/>
+            </Property>
             <Property name="text" type="java.lang.String" value="Open in browser"/>
           </Properties>
           <Events>

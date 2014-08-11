@@ -7,7 +7,7 @@
 package page_utils;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -17,7 +17,7 @@ import java.util.Objects;
 public class Page implements Serializable{
     private String link;
     private StringBuilder content;
-    private ArrayList<String> references;
+    private List<String> references;
     
     public Page(String url, StringBuilder sb){
         this.link = url;
@@ -60,14 +60,14 @@ public class Page implements Serializable{
     /**
      * @return the references
      */
-    public ArrayList<String> getReferences() {
+    public List<String> getReferences() {
         return references;
     }
 
     /**
      * @param references the references to set
      */
-    public void setReferences(ArrayList<String> references) {
+    public void setReferences(List<String> references) {
         this.references = references;
     }
     
