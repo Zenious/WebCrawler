@@ -25,7 +25,7 @@ public class Processor implements Runnable {
     private final Pattern pattern = Pattern.compile(regexp);
     private Matcher matcher;
     private Page processingPage;
-    public ArrayList<String> URLs = new ArrayList<>();
+    private ArrayList<String> URLs = new ArrayList<>();
 
     public Processor(){}
 

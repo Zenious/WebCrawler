@@ -502,10 +502,11 @@ public class GUIv2 extends javax.swing.JFrame {
                         toView = donePagesHashMap.get(url);
                         sourceCodeArea.setText(toView.getContent().toString());
                         DefaultListModel model = new DefaultListModel();
-                        System.out.println(toView.getReferences().size());
+                        int realReferenceCount = (int)dtm.getValueAt(row, 3);
                         for (String ref : toView.getReferences()) {
                             model.addElement(ref);
-                            System.out.println(ref);
+                            realReferenceCount--;
+                            if(realReferenceCount == 0) break;
                         }
                         referenceList.setModel(model);
                     } catch (InterruptedException|NullPointerException error) {
@@ -995,12 +996,19 @@ public class GUIv2 extends javax.swing.JFrame {
                 graph.getNode(link).addAttribute("ui.label", link);
                 tempList.add(link);
             }
+            int referenceRow = 0;
+            while (!dtm.getValueAt(referenceRow, 0).toString().equalsIgnoreCase(link)){
+                referenceRow++;
+            }
+            int realReferenceCount = (int)dtm.getValueAt(referenceRow, 3);
             for (String ref : entry.getValue().getReferences()) {
                 if (graph.getNode(ref) == null) {
                     // System.out.println("[*] Does not exist");
                     graph.addNode(ref);
                     graph.getNode(ref).addAttribute("ui.label", ref);
                     tempList.add(ref);
+                    realReferenceCount--;
+                    if (realReferenceCount == 0) break;
                 } else {
                     //  System.out.println("[*] Exist!");
                 }
